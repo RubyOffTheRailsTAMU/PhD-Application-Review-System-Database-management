@@ -8,7 +8,7 @@ module Api
         def index
             query = params[:query]
             field = params[:field] 
-            
+            # be able to search given form field1:value1 field2:value2
             case field
             when "application_name"
               @results = Applicant.where("lower(application_name) LIKE ?", "%#{query.downcase}%")
