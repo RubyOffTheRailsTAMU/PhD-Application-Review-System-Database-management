@@ -1,8 +1,7 @@
-# app/controllers/api/v1/applicants_controller.rb
-
 module Api
   module V1
     class ApplicantsapiController < ApplicationController
+      skip_before_action :verify_authenticity_token
       def index
         applicants = Applicant.all
         render json: applicants
@@ -40,18 +39,18 @@ module Api
       private
 
       def applicant_params
-        params.require(:applicant).permit(
-          :applicant_cas_id,
-          :applicant_name,
-          :applicant_gender,
-          :applicant_citizenship_country,
-          :applicant_dob,
-          :applicant_email,
-          :applicant_degree,
-          :applicant_submitted,
-          :applicant_status,
-          :applicant_research,
-          :applicant_faculty
+        params.require(:applicantsapi).permit(
+          :application_cas_id,
+          :application_name,
+          :application_gender,
+          :application_citizenship_country,
+          :application_dob,
+          :application_email,
+          :application_degree,
+          :application_submitted,
+          :application_status,
+          :application_research,
+          :application_faculty
         )
       end
     end
