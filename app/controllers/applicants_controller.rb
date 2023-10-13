@@ -84,6 +84,9 @@ class ApplicantsController < ApplicationController
     schools=['0','1','2']
 
     data.each do |person|
+      # Change the type of cas_id to string
+      person['cas_id']=person['cas_id'].to_i.to_s
+
       person['school']=[]
 
       schools.each do |school|

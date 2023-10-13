@@ -14,10 +14,20 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_11_160235) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "CANDIDATES", id: false, force: :cascade do |t|
-    t.string "candidate_id"
-    t.string "candidate_info"
-    t.index ["candidate_id"], name: "candidate_id_unq_idx", unique: true
+  create_table "applicantions", force: :cascade do |t|
+    t.integer "application_cas_id"
+    t.string "application_name"
+    t.string "application_gender"
+    t.string "application_citizenship_country"
+    t.string "application_dob"
+    t.string "application_email"
+    t.string "application_degree"
+    t.datetime "application_submitted"
+    t.string "application_status"
+    t.string "application_research"
+    t.string "application_faculty"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "applicants", force: :cascade do |t|
@@ -46,14 +56,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_11_160235) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["applicant_id"], name: "index_application_ielts_on_applicant_id"
-  end
-
-  create_table "candidates", force: :cascade do |t|
-    t.string "candidate_id"
-    t.text "candidate_info"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["candidate_id"], name: "index_candidates_on_candidate_id", unique: true
   end
 
   create_table "gres", force: :cascade do |t|
