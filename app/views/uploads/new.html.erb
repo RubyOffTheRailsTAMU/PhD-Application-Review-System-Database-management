@@ -1,0 +1,14 @@
+<%= form_tag('/uploads', multipart: true) do %>
+   <label for="file">Choose a file to upload:</label>
+   <%= file_field_tag 'file' %>
+   <%= submit_tag "Upload File" %>
+<% end %>
+
+<% flash.each do |key, message| %>
+    <div class="alert alert-<%= key %>">
+      <%= message %>
+    </div>
+<% end %>
+  
+
+

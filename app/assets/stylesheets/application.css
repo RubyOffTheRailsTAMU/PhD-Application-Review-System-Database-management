@@ -13,3 +13,10 @@
  *= require_tree .
  *= require_self
  */
+ .alert {
+    color: white;
+    background-color: green; /* for success messages */
+    /* or */
+    background-color: red; /* for error messages */
+  }
+  
