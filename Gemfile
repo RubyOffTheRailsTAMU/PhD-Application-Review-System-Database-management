@@ -90,3 +90,6 @@ group :test do
 end
 
 gem 'rspec-rails'
+
+#handle cross origin resource sharing
+gem 'rack-cors'
