@@ -11,13 +11,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :searches, only: [:index]
     end
-  get "up" => "rails/health#show", as: :rails_health_check
 
-  namespace 'api' do
-    namespace 'v1' do
-      resources :applicantsapi
-    end
-  end
   # Defines the root path route ("/")
 
   #routes for file upload
@@ -30,4 +24,12 @@ Rails.application.routes.draw do
 
 end
 
+
+get "up" => "rails/health#show", as: :rails_health_check
+
+namespace 'api' do
+  namespace 'v1' do
+    resources :applicantsapi
+  end
+end
 end
