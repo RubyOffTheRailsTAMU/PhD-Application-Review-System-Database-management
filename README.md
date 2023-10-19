@@ -29,3 +29,7 @@ PUT `http://127.0.0.1:3001/api/v1/applicantsapi/<id>` to update an application.
 Beacause we will have different api formats for different functions. So, here I only create the API for the application table. And we can decide what format we will use to manage the data, and what the response we will need for every api url.
 
 My suggestion is `http://127.0.0.1:3001/api/v1/<tablename>/<id>` for update data in tables. And `http://127.0.0.1:3001/api/v1/filter/<item>/<range>` for filter gre score , gender, etc.
+
+## Heroku database migrate
+
+Everytime we make changes on database, run `heroku run rake db:migrate`.

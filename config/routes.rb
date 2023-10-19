@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
   get 'applicants/savedata'
-  # get 'uploads/new'
-  #get 'uploads/create'
+
   resources :uploads, only: [:new, :create]
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
