@@ -22,14 +22,14 @@ Rails.application.routes.draw do
 
   # root "posts#index"
 
-end
-
-
-get "up" => "rails/health#show", as: :rails_health_check
-
-namespace 'api' do
-  namespace 'v1' do
-    resources :applicantsapi
   end
-end
+
+
+  get "up" => "rails/health#show", as: :rails_health_check
+
+  namespace 'api' do
+    namespace 'v1' do
+      resources :applicantsapi
+    end
+  end
 end
