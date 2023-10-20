@@ -5,7 +5,13 @@ class ApplicantsController < ApplicationController
       saveOneDate(data)
     end
 
-    render json: { message: "Application data saved successfully" }
+    file_path = session[:excel_file_path] #Get file path from session
+    #At this point, it is assumed that the file was found successfully, or else Rails would have shown an error earlier.
+    #Proceed to delete the file.
+    File.delete(file_path)
+    #render json: { message: "Application data saved successfully. Uploaded file has been deleted." }
+    render 'upload_success'
+   
   end
 
   def saveOneDate(data)
@@ -71,7 +77,9 @@ class ApplicantsController < ApplicationController
   end
 
   def getData()
-    excel = Roo::Excelx.new(Rails.root.join('Dummy_data.xlsx'))
+    excel_file_path = session[:excel_file_path] #Get file path from session
+    excel = Roo::Excelx.new(excel_file_path) # New, uses file path from session
+    #excel = Roo::Excelx.new(Rails.root.join('Dummy_data.xlsx')) # Old
     excel.default_sheet = excel.sheets.first
 
     header = excel.row(1)

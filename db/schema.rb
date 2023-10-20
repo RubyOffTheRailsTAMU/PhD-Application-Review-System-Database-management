@@ -14,12 +14,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_11_160235) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "CANDIDATES", id: false, force: :cascade do |t|
-    t.string "candidate_id"
-    t.string "candidate_info"
-    t.index ["candidate_id"], name: "candidate_id_unq_idx", unique: true
-  end
-
   create_table "applicants", force: :cascade do |t|
     t.string "application_cas_id"
     t.string "application_name"
