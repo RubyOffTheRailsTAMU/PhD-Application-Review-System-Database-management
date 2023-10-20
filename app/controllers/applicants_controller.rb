@@ -9,7 +9,8 @@ class ApplicantsController < ApplicationController
     #At this point, it is assumed that the file was found successfully, or else Rails would have shown an error earlier.
     #Proceed to delete the file.
     File.delete(file_path)
-    render json: { message: "Application data saved successfully. Uploaded file has been deleted." }
+    #render json: { message: "Application data saved successfully. Uploaded file has been deleted." }
+    render 'upload_success'
    
   end
 
