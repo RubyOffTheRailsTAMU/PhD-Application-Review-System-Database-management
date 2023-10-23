@@ -97,7 +97,11 @@ module Api
       
               query, *values = build_query(search_str)
               #todo: optimize so joins are only when needed. 
-              @results = Applicant.joins(:schools, :toefl, :gre, :application_ielt).distinct.where(query, *values)     
+              @results = Applicant.joins(:schools, :toefl, :gre, :application_ielt)
+              .select('applicants.*, schools.*, toefls.*, gres.*, application_ielts.*')
+              .distinct
+              .where(query, *values)
+                          
               puts @results.inspect
             else 
               #todo: validate fields even tho already done on input. 
