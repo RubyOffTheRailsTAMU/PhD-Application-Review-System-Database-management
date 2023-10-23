@@ -56,14 +56,15 @@ module Api
 
           puts valid_columns
 
-          
-
           search_str.split.each do |constraint|
             key, operator, value = constraint.match(/([\w\.]+)([<>=~]+)(.+)/
           ).captures
         
+
+            # replace short hand with column name
             key = COLUMN_MAP[key.downcase] || key
 
+            #verify key is of column names
             unless valid_columns.include?(key.downcase)
               raise ActiveRecord::StatementInvalid.new("Invalid column name: #{key}")
             end
@@ -82,10 +83,7 @@ module Api
               conditions << "lower(#{key}) LIKE ?"
               values << "%#{value.downcase}%"
             end
-        
-            # values << value unless (operator == "=" or operator == "~")
           end
-          
           [conditions.join(" AND "), *values]
         end
 
@@ -98,9 +96,13 @@ module Api
               puts "Search string: #{search_str}"
       
               query, *values = build_query(search_str)
+              #todo: optimize so joins are only when needed. 
               @results = Applicant.joins(:schools, :toefl, :gre, :application_ielt).distinct.where(query, *values)     
               puts @results.inspect
             else 
+              #todo: validate fields even tho already done on input. 
+              #todo: consider numerical feilds. 
+              #@results = Applicant.where("lower(#{field} LIKE ? %#{query.downcase}%)")
               case field
               when "application_name"
                 @results = Applicant.where("lower(application_name) LIKE ?", "%#{query.downcase}%")
