@@ -10,12 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_10_11_160235) do
+ActiveRecord::Schema[7.1].define(version: 2023_10_24_185642) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "applicants", force: :cascade do |t|
-    t.string "application_cas_id"
+    t.bigint "application_cas_id"
     t.string "application_name"
     t.string "application_gender"
     t.string "application_citizenship_country"
@@ -40,14 +40,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_11_160235) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["applicant_id"], name: "index_application_ielts_on_applicant_id"
-  end
-
-  create_table "candidates", force: :cascade do |t|
-    t.string "candidate_id"
-    t.text "candidate_info"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["candidate_id"], name: "index_candidates_on_candidate_id", unique: true
   end
 
   create_table "gres", force: :cascade do |t|
