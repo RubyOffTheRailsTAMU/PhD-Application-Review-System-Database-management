@@ -32,3 +32,14 @@
   color: #a94442;
 }
 
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.logo-image {
+  max-width: 200px;
+  height: auto;
+}
