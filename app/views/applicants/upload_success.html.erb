@@ -5,6 +5,7 @@
   <style>
     body {
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
@@ -13,12 +14,37 @@
     .message {
       text-align: center;
       font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .upload-button {
+      font-size: 18px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none; /* Remove default underline style for links */
+    }
+    .img {
+      width: 125px;
+      height: 125px;
+      image-align: center;
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 33.3333%; 
+      max-height: 33.3333vh; 
     }
   </style>
 </head>
 <body>
   <div class="message">
-    File uploaded successfully
+    <span class="checkmark">
+    <%= image_tag('green-checkmark.png', class: 'img',  alt: 'Green Checkmark') %>
+    </span> File uploaded successfully
   </div>
+  <a href="/uploads/new" class="upload-button">Upload another file</a>
 </body>
 </html>

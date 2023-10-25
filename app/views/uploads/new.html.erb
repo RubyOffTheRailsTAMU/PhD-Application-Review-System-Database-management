@@ -1,6 +1,6 @@
 <%= form_tag('/uploads', multipart: true) do %>
    <label for="file">Choose a file to upload:</label>
-   <%= file_field_tag 'file' %>
+   <%= file_field_tag class= 'file' %>
    <%= submit_tag "Upload File" %>
 <% end %>
 
