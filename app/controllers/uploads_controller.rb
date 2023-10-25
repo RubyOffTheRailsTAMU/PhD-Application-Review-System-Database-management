@@ -20,7 +20,7 @@ class UploadsController < ApplicationController
       flash[:error] = 'Invalid file format! Please upload a file of type .xlsx, .xls or .csv'
       redirect_to '/uploads/new'
     else
-      flash[:error] = 'Please upload a file'
+      flash[:error] = 'No file selected. Please choose a file.'
       redirect_to '/uploads/new'
     end
   end
