@@ -1,4 +1,5 @@
 class UploadsController < ApplicationController
+  before_action :require_user
   # GET /uploads/new
   def new
   end

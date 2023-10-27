@@ -1,3 +1,12 @@
-<div class="logo-container">
-  <%= image_tag 'rails-logo.png', alt: 'Rails Logo', class: 'logo-image' %>
-</div>
+<% if session[:user_email] %>
+    <% if session[:alert] %>
+      <p><%= session[:alert] %></p>
+      <div class="login-button">
+        <%= link_to 'Login as Admin', '/admin', class: 'login-with-google' %>
+      </div>
+    <% else %>
+    <%= controller.redirect_to '/uploads/new' %>
+  <% end %>
+<% else %>
+ <%= render 'login'%>
+<% end %>

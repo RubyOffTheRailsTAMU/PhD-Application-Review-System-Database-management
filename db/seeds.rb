@@ -7,3 +7,15 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+
+# Create new users
+users = [
+  { user_netid: "123",user_email:"admin.phd@tamu.edu", user_name: "admin", user_level: "admin", password:"admin"},
+  # add more users as needed
+]
+
+# Save users to the database
+users.each do |user|
+  User.create!(user)
+end
