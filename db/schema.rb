@@ -42,14 +42,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_11_160235) do
     t.index ["applicant_id"], name: "index_application_ielts_on_applicant_id"
   end
 
-  create_table "candidates", force: :cascade do |t|
-    t.string "candidate_id"
-    t.text "candidate_info"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["candidate_id"], name: "index_candidates_on_candidate_id", unique: true
-  end
-
   create_table "gres", force: :cascade do |t|
     t.bigint "applicant_id", null: false
     t.integer "application_gre_quantitative_scaled"

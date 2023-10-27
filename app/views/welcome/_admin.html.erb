@@ -1,0 +1,17 @@
+<%= form_with(scope: :session, url: '/login') do |f| %>
+    <p>Admin Login</p>
+    <div class="form-group">
+      <%= f.label :user_name, 'Username' %><br/>
+      <%= f.text_field :user_name, class: "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= f.label :password, 'Password' %><br/>
+      <%= f.password_field :password, class: "form-control" %>
+    </div>
+    <div>
+        <%= f.hidden_field :user_email, value: "admin.phd@tamu.edu" %>
+    </div>
+    <div class="form-group">
+      <%= f.submit "Log In", class: "btn btn-primary" %>
+    </div>
+    <% end %>

@@ -1,0 +1,60 @@
+.phdapp-login,
+ .phdapp-login * {
+   box-sizing: border-box;
+ }
+ .phdapp-login {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  background: linear-gradient(to right, #500000 50%, #ffffff 50%);
+ }
+
+
+/* Updated style for the container */
+.card-login-container {
+  width: 350px; /* Set fixed width */
+  height: 400px; /* Set fixed height */
+  background-color: rgb(235, 235, 235);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+
+ /* Style for the logo */
+.logo {
+  width: 115%;  /* Adjusted width for responsive sizing */
+  max-width: 300px;
+  height: auto;
+  margin-bottom: 15px; /
+}
+
+/* Style for the text */
+.text {
+  margin-bottom: 15px; /* Adjusted margin for compact sizing */
+  text-align: center;
+  font-weight: 650;
+}
+
+/* Style for the button */
+.button {
+  padding: 10px 20px; /* Make the button larger */
+  font-size: 1rem; /* Font size of button text */
+  cursor: pointer; /* Change cursor on hover over button */
+}
+
+
+ .login-with-google {
+  padding: 8px 16px;  /* Adjusted padding for compact sizing */
+  background-color: #500000;
+  color: white;
+  text-decoration: none;
+  text-align: center;
+  border-radius: 5px;
+  font-size: 1rem;
+ }
+ 
