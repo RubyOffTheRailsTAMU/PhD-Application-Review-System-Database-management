@@ -35,5 +35,6 @@ My suggestion is `http://127.0.0.1:3001/api/v1/<tablename>/<id>` for update data
 Everytime we make changes on database, run `heroku run rake db:migrate`.
 
 ## How to delete everything from Database
-
-`Applicants.all.destroy_all`
+`heroku run -a phdapplicationsystemdatabase rails db:migrate` (If you haven't done so already)
+`heroku run -a phdapplicationsystemdatabase rails console` (Connect to irb)
+`Applicant.all.destroy_all` (Delete everything from applicants)
