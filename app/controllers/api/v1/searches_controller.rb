@@ -2,6 +2,7 @@ module Api
     module V1
       class SearchesController < ApplicationController
         # You might want to skip CSRF token for API requests
+        # skip_before_action :verify_authenticity_token
         before_action :authenticate_request
 
         
