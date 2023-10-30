@@ -14,6 +14,9 @@ gem "sprockets-rails"
 gem 'pg'
 gem 'dotenv-rails'
 
+# JWT
+gem 'jwt'
+
 # For Google Oauth
 gem 'omniauth'
 gem 'omniauth-google-oauth2'

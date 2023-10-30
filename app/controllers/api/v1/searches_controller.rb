@@ -2,8 +2,8 @@ module Api
     module V1
       class SearchesController < ApplicationController
         # You might want to skip CSRF token for API requests
-        # todo: use verification? 
-        skip_before_action :verify_authenticity_token
+        before_action :authenticate_request
+
         
         COLUMN_MAP = {
           'cas_id' => 'application_cas_id',
@@ -130,6 +130,17 @@ module Api
             else
               # Handle other StatementInvalid errors here if necessary
             end
+          end
+        end
+        private
+
+        def authenticate_request
+          token = request.headers['Authorization'].to_s.split(' ').last
+          begin
+            decoded_token = JWT.decode(token, JWT_PUBLIC_KEY, true, algorithm: JWT_ALGORITHM)
+            puts "user_email: "+ decoded_token[0]['user_email']
+          rescue JWT::DecodeError
+            render json: { error: 'Invalid token' }, status: :unauthorized
           end
         end
       end
