@@ -1,7 +1,40 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <%= form_tag('/uploads', multipart: true) do %>
    <label for="file">Choose a file to upload:</label>
    <%= file_field_tag 'file' %>
    <%= submit_tag "Upload File" %>
 <% end %>
-<%= button_to "Logout", '/logout', method: :get, class: "logout-button" %>
-<%= button_to "Clear Database", '/clear_database', method: :get, class: "logout-button" %>
+
+<%= button_to "Clear Database", '/clear_database', method: :get, class: "logout-button", id: "clear-database-button" %>
+
+
+<div id="confirmation-modal" style="display: none;">
+  <p>Warning: This action cannot be undone!</p>
+  <button id="confirm-yes">Yes</button>
+  <button id="confirm-no">No</button>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    var clearButton = $("#clear-database-button");
+    var modal = $("#confirmation-modal");
+    var yesButton = $("#confirm-yes");
+    var noButton = $("#confirm-no");
+
+    clearButton.on("click", function(event) {
+      event.preventDefault(); // Prevent the default form submission behavior
+
+      modal.show(); // Display the modal when the button is clicked
+    });
+
+    yesButton.on("click", function() {
+      window.location.href = '/clear_database'; // Redirect to the specified route on "Yes"
+    });
+
+    noButton.on("click", function() {
+      modal.hide(); // Hide the modal on "No"
+    });
+  });
+</script>
