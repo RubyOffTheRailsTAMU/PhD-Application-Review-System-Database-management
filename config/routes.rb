@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   #Login Logic:
   post '/login', to: 'welcome#create'
   get '/logout', to: 'welcome#destroy'
+  #Logic to clear database:
+  get '/clear_database', to: 'database_clearing#clear'
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
