@@ -9,32 +9,69 @@
 <%= button_to "Clear Database", '/clear_database', method: :get, class: "logout-button", id: "clear-database-button" %>
 
 
-<div id="confirmation-modal" style="display: none;">
-  <p>Warning: This action cannot be undone!</p>
-  <button id="confirm-yes">Yes</button>
-  <button id="confirm-no">No</button>
+<div id="modal-container" class="modal-container" style="display: none;">
+  <div id="confirmation-modal" class="modal-content">
+    <img src="<%= asset_path('warning.png') %>" alt="Warning Icon" class="warning-icon">
+    <p class="warning-text">Warning: This action cannot be undone!</p>
+    <button id="confirm-yes">Delete Database</button>
+    <button id="confirm-no">Cancel</button>
+  </div>
 </div>
+
+<style>
+.modal-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+}
+.warning-icon {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 10px; /* Add some spacing between the icon and the text */
+  width: 80px;
+  height: 80px;
+}
+
+.warning-text {
+  display: inline-block;
+  vertical-align: middle;
+}
+</style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-  $(document).ready(function() {
-    var clearButton = $("#clear-database-button");
-    var modal = $("#confirmation-modal");
-    var yesButton = $("#confirm-yes");
-    var noButton = $("#confirm-no");
-
-    clearButton.on("click", function(event) {
-      event.preventDefault(); // Prevent the default form submission behavior
-
-      modal.show(); // Display the modal when the button is clicked
-    });
-
-    yesButton.on("click", function() {
-      window.location.href = '/clear_database'; // Redirect to the specified route on "Yes"
-    });
-
-    noButton.on("click", function() {
-      modal.hide(); // Hide the modal on "No"
-    });
-  });
+$(document).ready(function() {
+   var clearButton = $("#clear-database-button");
+   var modalContainer = $("#modal-container");
+   var yesButton = $("#confirm-yes");
+   var noButton = $("#confirm-no");
+ 
+   clearButton.on("click", function(event) {
+     event.preventDefault();
+ 
+     modalContainer.show(); // Display the modal container in the center of the screen
+   });
+ 
+   yesButton.on("click", function() {
+     window.location.href = '/clear_database';
+   });
+ 
+   noButton.on("click", function() {
+     modalContainer.hide(); // Hide the modal container
+   });
+ });
+ 
 </script>
