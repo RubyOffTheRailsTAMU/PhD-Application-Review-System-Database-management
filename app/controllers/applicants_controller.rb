@@ -2,7 +2,11 @@ class ApplicantsController < ApplicationController
   def savedata
     jsonData=getData()
     jsonData.each do |data|
-      saveOneDate(data)
+      if Applicant.exists?(application_cas_id: data["cas_id"])
+        next
+      else
+        saveOneDate(data)
+      end
     end
 
     file_path = session[:excel_file_path] #Get file path from session
@@ -94,6 +98,8 @@ class ApplicantsController < ApplicationController
     data.each do |person|
       # Change the type of cas_id to string
       person['cas_id']=person['cas_id'].to_i.to_s
+      #ignore duplicate cas_id
+      
 
       person['school']=[]
 
