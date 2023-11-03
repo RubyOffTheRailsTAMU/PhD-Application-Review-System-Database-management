@@ -1,0 +1,2 @@
+module DatabaseClearingHelper
+end
