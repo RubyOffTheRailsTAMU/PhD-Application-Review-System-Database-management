@@ -89,7 +89,7 @@ class ApplicantsController < ApplicationController
     field_headers = excel.row(1)
 
     # check if field table is empty
-    if Field.all == []:
+    if Field.all == []
       # Store field ids in a hash to avoid repeated database lookups
       field_ids = field_headers.map do |header|
         
