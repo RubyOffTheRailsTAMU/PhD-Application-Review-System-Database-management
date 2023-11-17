@@ -300,13 +300,21 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_17_184551) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "tags", force: :cascade do |t|
+    t.string "name"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "cas_id"
+    t.index ["cas_id"], name: "index_tags_on_cas_id"
+    t.index ["user_id"], name: "index_tags_on_user_id"
+  end
+
   create_table "tasks", force: :cascade do |t|
     t.integer "status"
     t.bigint "user_id", null: false
-    t.bigint "applicant_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["applicant_id"], name: "index_tasks_on_applicant_id"
     t.index ["user_id"], name: "index_tasks_on_user_id"
   end
 
@@ -340,7 +348,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_17_184551) do
   add_foreign_key "motor_note_tag_tags", "motor_notes", column: "note_id"
   add_foreign_key "motor_taggable_tags", "motor_tags", column: "tag_id"
   add_foreign_key "schools", "applicants", on_delete: :cascade
-  add_foreign_key "tasks", "applicants"
   add_foreign_key "tasks", "users"
   add_foreign_key "toefls", "applicants", on_delete: :cascade
 end
