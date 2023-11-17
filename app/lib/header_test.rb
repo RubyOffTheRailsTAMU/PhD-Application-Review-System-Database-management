@@ -86,8 +86,6 @@ data_rows = []
       row_data[value] = row[headers.index(key)]
     end
     #todo: add to database
-    field = Field.find_by(field_name: key)
-    Data.create!(data_value: value, field_id: field.id, cas_id: row[headers.index("cas_id")], subgroup: key)
   end
 
   data_rows << row_data

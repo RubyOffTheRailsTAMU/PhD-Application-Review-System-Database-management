@@ -1,4 +1,5 @@
 class ApplicantsController < ApplicationController
+
   def uploads_handler
     @x = 5
     @y = 3
@@ -34,6 +35,7 @@ class ApplicantsController < ApplicationController
     # unique_in_fields = {}
     # unique_in_categorized_headers = {}
 
+    # todo: consider non used fields for new ones too 
     if unique_in_categorized_headers.size > 0
       if unique_in_fields.size > 0 # if there are unique headers AND unique fields
         # wait for user input
@@ -41,41 +43,40 @@ class ApplicantsController < ApplicationController
       else # only new headers, add to fields table
         unique_in_categorized_headers.each do |header|
           is_many = categorized_headers[header].is_a?(Hash)
-          # print("field name: #{header}, is_many: #{is_many}\n")
+          print("field name: #{header}, is_many: #{is_many}\n")
           Field.create!(field_name: header, field_alias: header, field_used: true, field_many: is_many)
         end
       end
     elsif unique_in_fields.size > 0 # no unique headers, only unique fields
       # turn off fields that are not in the new spreadsheet
       unique_in_fields.each do |field|
-        # print("field name: #{field}\n")
+        print("field name: #{field}\n")
         Field.find_by(field_name: field).update(field_used: false)
       end
     end
 
-    # Now process each row
-    data_rows = []
 
+    # Now process each row
     (2..spreadsheet.last_row).each do |i|
       row = spreadsheet.row(i)
-      row_data = {}
 
-      categorized_headers.each do |key, value|
-        if value.is_a?(Hash)
-          # The header was of the form "word1_word2_wordN_digit"... ie header is a many
-          row_data[key] = value.transform_values { |header| row[headers.index(header)] }
-        else
-          # It's a single header, not of the form "word1_word2_wordN_digit" ... ie header is not a many
-          row_data[value] = row[headers.index(key)]
-        end
+      categorized_headers.each do |key, header_value|
+        field_value = if header_value.is_a?(Hash)
+            # For 'many' headers, collapse the dictionary to just the values as comma-separated
+            values_array = header_value.keys.map { |sub_key| row[headers.index(header_value[sub_key])] }
+            values_array.join(", ")
+          else
+            # For regular headers, fetch the value directly from the row
+            row[headers.index(header_value)] || ""
+          end
+
         field = Field.find_by(field_name: key)
-        Data.create!(data_value: value, field_id: field.id, cas_id: row[headers.index('cas_id')], subgroup: key)
+        puts "key: #{key}"
+        puts "field value: #{field_value}"
+        field.infos.create(data_value: field_value, cas_id: row[headers.index("cas_id")].to_i.to_s, subgroup: key)
+
       end
-
-      data_rows << row_data
     end
-
-    # puts data_rows
   end
 
   def process_headers(headers)
@@ -93,6 +94,8 @@ class ApplicantsController < ApplicationController
       end
     end
 
+    categories
+  end
     def savedata
       jsonData = getData
       jsonData.each do |data|
