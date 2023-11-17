@@ -65,9 +65,7 @@ class ApplicantsController < ApplicationController
         field = Field.find_by(field_name: key)
         puts "key: #{key}"
         puts "field: #{field}"
-        #todo: ???
-        field.datas.create(data_value: value, cas_id: row[headers.index("cas_id")], subgroup: key)
-        #Data.create!(data_value: value, field_id: field, cas_id: row[headers.index("cas_id")], subgroup: key)
+        field.infos.create(data_value: value, cas_id: row[headers.index("cas_id")], subgroup: key)
       end
 
       data_rows << row_data

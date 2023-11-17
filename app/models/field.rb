@@ -1,3 +1,3 @@
 class Field < ApplicationRecord
-  has_many :datas
+  has_many :infos
 end
