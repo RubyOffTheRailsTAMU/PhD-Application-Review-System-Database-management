@@ -1,0 +1,25 @@
+.home-container {
+  width: 100%;
+  display: flex;
+  overflow: auto;
+  min-height: 100vh;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.home-text {
+  align-self: center;
+  margin-top: var(--dl-space-space-sixunits);
+}
+.home-ul {
+  top: 176px;
+  right: 115px;
+  width: 298px;
+  position: absolute;
+}
+.home-ul1 {
+  top: 175px;
+  left: 31px;
+  width: 298px;
+  position: absolute;
+}

@@ -1,4 +1,14 @@
 class ApplicantsController < ApplicationController
+
+  require 'lib/header_test'
+  def uploads_handler
+    c_elements = LIB::HeaderTest::common_elements
+
+    @x = 5
+    @y = 3
+    render 'uploads_handler'
+  end
+
   def process_input
     excel_file_path = session[:excel_file_path] #Get file path from session
     spreadsheet = Roo::Excelx.new(excel_file_path) # New, uses file path from session
@@ -88,8 +98,6 @@ class ApplicantsController < ApplicationController
       end
     end
 
-    categories
-  end
 
   def savedata
     jsonData = getData()

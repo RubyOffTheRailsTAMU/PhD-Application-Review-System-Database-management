@@ -15,6 +15,8 @@ Rails.application.routes.draw do
 
   #Logic to clear database:
   get '/clear_database', to: 'database_clearing#clear'
+  #Handle database uploads:
+  get '/applicants/uploads_handler', to: 'applicants#uploads_handler'
 
   namespace :api do
     namespace :v1 do
