@@ -28,6 +28,7 @@ class ApplicantsController < ApplicationController
     # unique_in_fields = {}
     # unique_in_categorized_headers = {}
 
+    # todo: consider non used fields for new ones too 
     if unique_in_categorized_headers.size > 0
       if unique_in_fields.size > 0 # if there are unique headers AND unique fields
         # wait for user input
@@ -47,6 +48,7 @@ class ApplicantsController < ApplicationController
       end
     end
 
+
     # Now process each row
     (2..spreadsheet.last_row).each do |i|
       row = spreadsheet.row(i)
@@ -64,7 +66,7 @@ class ApplicantsController < ApplicationController
         field = Field.find_by(field_name: key)
         puts "key: #{key}"
         puts "field value: #{field_value}"
-        field.infos.create(data_value: field_value, cas_id: row[headers.index("cas_id")], subgroup: key)
+        field.infos.create(data_value: field_value, cas_id: row[headers.index("cas_id")].to_i.to_s, subgroup: key)
       end
     end
   end
