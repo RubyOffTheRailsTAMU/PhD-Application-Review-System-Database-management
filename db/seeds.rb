@@ -19,7 +19,7 @@ users.each do |user|
   User.create!(user)
 end
 
-# Create new fields
+#Create new fields
 fields = [
   { field_name: "first_name", field_alias: "first", field_used: true, field_many: false },
   { field_name: "middle_name", field_alias: "middle", field_used: true, field_many: false },
@@ -27,6 +27,17 @@ fields = [
   { field_name: "email", field_alias: "email", field_used: true, field_many: false },
   { field_name: "phone", field_alias: "phone", field_used: true, field_many: false },
 ]
+
+# fields = [
+#   { field_name: "cas_id", field_alias: "cas_id", field_used: true, field_many: false},
+#   { field_name: "Full Name", field_alias: "Full Name", field_used: true, field_many: false},
+#   { field_name: "gender", field_alias: "gender", field_used: true, field_many: false},
+#   { field_name: "citizenship_country_name", field_alias: "citizenship_country_name", field_used: true, field_many: false},
+#   { field_name: "phone", field_alias: "phone", field_used: true, field_many: false},
+#   { field_name: "citizenship_status", field_alias: "citizenship_status", field_used: true, field_many: false},
+#   { field_name: "date_of_birth", field_alias: "date_of_birth", field_used: true, field_many: false},
+#   { field_name: "gpas_by_transcript_school_name", field_alias: "gpas_by_transcript_school_name", field_used: true, field_many: false},
+# ]
 fields.each do |field|
   # Field.create!(field)
 end

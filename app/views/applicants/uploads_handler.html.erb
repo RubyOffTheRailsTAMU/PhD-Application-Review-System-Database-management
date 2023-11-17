@@ -1,22 +1,71 @@
+<!-- index.html.erb -->
 <div>
-  <%= stylesheet_link_tag "home" %>
+  <link href="./home.css" rel="stylesheet" />
   <div class="home-container">
-    <span class="home-text">Handle the following Elements:</span>
-    <ul class="home-ul list">
-      <% @x.times do |i| %>
+    <span class="home-text">Please Handle the following Elements:</span>
+    <span class="home-text1">Old Fields (Not in upload, but in database): </span>
+    <span class="home-text2">New Fields (In upload, but not in database):</span>
+
+    <ul class="home-ul1 list" id="leftColumn">
+      <% @unique_in_categorized_headers.each do |value| %>
         <li class="list-item">
-          <span>Text</span>
-          <%= select_tag "options_#{i}[]", options_for_select(["Option 1", "Option 2", "Option 3"]) %>
+          <span><%= value %></span>
+          <select class="home-select" onchange="handleChange(this, '<%= value %>')">
+            <option value="Select An Option:">Select An Option:</option>
+            <option value="Rename">Rename</option>
+            <option value="Add">Add</option>
+          </select>
+          <div id="renameBox_<%= value %>" style="display: none;">
+            <p id="dynamicText_<%= value %>"></p>
+            <input type="text" id="renameInput_<%= value %>" placeholder="Enter a new name">
+            <button onclick="submitRename('<%= value %>')">Submit</button>
+          </div>
         </li>
       <% end %>
     </ul>
-    <ul class="home-ul1 list">
-      <% @y.times do |j| %>
+
+    <ul class="home-ul list" id="rightColumn">
+      <% @unique_in_fields.each do |value| %>
         <li class="list-item">
-          <span>Text</span>
-          <%= select_tag "options_#{j + @x}[]", options_for_select(["Option 1", "Option 2", "Option 3"]) %>
+          <span><%= value %></span>
+          <select class="home-select" onchange="handleChange(this, '<%= value %>')">
+            <option value="Select An Option:">Select An Option:</option>
+            <option value="Rename">Rename</option>
+            <option value="Not Used">Not Used</option>
+          </select>
+          <div id="renameBox_<%= value %>" style="display: none;">
+            <p id="dynamicText_<%= value %>"></p>
+            <input type="text" id="renameInput_<%= value %>" placeholder="Enter a new name">
+            <button onclick="submitRename('<%= value %>')">Submit</button>
+          </div>
         </li>
       <% end %>
     </ul>
+
   </div>
+
+  <script>
+    function handleChange(select, value) {
+      var selectedValue = select.value;
+      var containerId = "renameBox_" + value;
+      var dynamicTextId = "dynamicText_" + value;
+
+      var renameBox = document.getElementById(containerId);
+      var dynamicText = document.getElementById(dynamicTextId);
+
+      if (selectedValue === "Rename") {
+        renameBox.style.display = "block";
+        dynamicText.innerText = "Enter a new name for " + value;
+      } else {
+        renameBox.style.display = "none";
+      }
+    }
+
+    function submitRename(value) {
+      var inputId = "renameInput_" + value;
+      var newName = document.getElementById(inputId).value;
+      // Do something with the new name (e.g., send it to the server)
+      console.log("New name:", newName);
+    }
+  </script>
 </div>
