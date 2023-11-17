@@ -1,0 +1,14 @@
+<div>
+  <%= stylesheet_link_tag "application" %>
+  <div class="home-container">
+    <span class="home-text">Handle the following Elements:</span>
+    <ul class="home-ul list">
+      <% @x.times do %>
+        <li class="list-item">
+          <span>Text</span>
+          <%= select_tag "options[]", options_for_select(["Option 1", "Option 2", "Option 3"]) %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

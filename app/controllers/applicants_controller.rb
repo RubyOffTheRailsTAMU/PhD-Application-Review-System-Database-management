@@ -1,4 +1,9 @@
 class ApplicantsController < ApplicationController
+  def uploads_handler
+    @x = 5
+    render 'uploads_handler'
+  end
+
   def savedata
     jsonData=getData()
     jsonData.each do |data|

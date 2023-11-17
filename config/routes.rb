@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   get '/logout', to: 'welcome#destroy'
   #Logic to clear database:
   get '/clear_database', to: 'database_clearing#clear'
+  #Handle database uploads:
+  get '/applicants/uploads_handler', to: 'applicants#uploads_handler'
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
