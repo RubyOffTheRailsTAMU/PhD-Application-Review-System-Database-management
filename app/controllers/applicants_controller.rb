@@ -86,8 +86,43 @@ class ApplicantsController < ApplicationController
     #excel = Roo::Excelx.new(Rails.root.join('Dummy_data.xlsx')) # Old
     excel.default_sheet = excel.sheets.first
 
-    header = excel.row(1)
+    field_headers = excel.row(1)
+
+    # check if field table is empty
+    if Field.all == []:
+      # Store field ids in a hash to avoid repeated database lookups
+      field_ids = field_headers.map do |header|
+        
+        field = Field.find_or_create_by!(field_name: header)
+        [header, field.id]
+      end.to_h
+    else
+      # Store field ids in a hash to avoid repeated database lookups
+      #if header is not unique, set many fields to True
+      # field_ids = field_headers.map do |header|
+      #   field = Field.find_or_create_by!(field_name: header)
+      #   [header, field.id]
+      # end.to_h
+    end
+
+    # handle subgroups
+
+
+
     data = []
+    # Starting from the second row, as the first row contains headers
+    (2..excel.last_row).each do |i|
+      row = spreadsheet.row(i)
+      
+      # Create data entries for each field value
+      field_headers.each_with_index do |header, index|
+        Data.create!(
+          group_id: group.id,
+          field_id: field_ids[header],
+          data_value: row[index + 1] # +1 because row includes the group name
+        )
+      end
+    end
 
     2.upto(excel.last_row) do |line|
       data << Hash[header.zip(excel.row(line))]

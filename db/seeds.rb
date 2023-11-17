@@ -11,11 +11,23 @@
 
 # Create new users
 users = [
-  { user_netid: "123",user_email:"admin.phd@tamu.edu", user_name: "admin", user_level: "admin", password:"admin"},
+  { user_netid: "123",user_email:"admin.phd@tamu.edu", user_name: "admin", user_level: "admin", password:"admin"}
   # add more users as needed
 ]
 
 # Save users to the database
 users.each do |user|
   User.create!(user)
+end
+
+# Create new fields
+fields = [
+  { field_name: "first_name", field_alias: "first", field_used: true, field_many: false},
+  { field_name: "middle_name", field_alias: "middle", field_used: true, field_many: false},
+  { field_name: "last_name", field_alias: "last", field_used: true, field_many: false},
+  { field_name: "email", field_alias: "email", field_used: true, field_many: false},
+  { field_name: "phone", field_alias: "phone", field_used: true, field_many: false},
+]
+fields.each do |field|
+  Field.create!(field)
 end
