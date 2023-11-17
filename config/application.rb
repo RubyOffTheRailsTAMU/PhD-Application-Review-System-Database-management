@@ -8,6 +8,10 @@ Bundler.require(*Rails.groups)
 
 module PhdApplicationReviewSystemDatabaseManagement
   class Application < Rails::Application
+    #Load Franky's logic
+    config.autoload_paths += Dir["#{config.root}/lib/**/"]
+    #config.autoload_paths += %W(#{config.root}/lib)
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.1
 

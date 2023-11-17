@@ -1,6 +1,10 @@
 class ApplicantsController < ApplicationController
+  require 'lib/header_test'
   def uploads_handler
+    c_elements = LIB::HeaderTest::common_elements
+
     @x = 5
+    @y = 3
     render 'uploads_handler'
   end
 
