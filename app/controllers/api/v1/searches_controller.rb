@@ -5,6 +5,13 @@ module Api
       # skip_before_action :verify_authenticity_token
       before_action :authenticate_request
 
+      # In SearchesController
+      def field_names
+        # name id should map tp
+        fields = Field.all
+        render json: fields
+      end
+
       def index
         field = params[:field]
         unless Field.where(field_used: true, field_name: field).exists?
@@ -31,13 +38,13 @@ module Api
         @results = matched_cas_ids.map do |cas_id|
           infos = Info.joins(:field)
                       .where(cas_id: cas_id)
-                      .select("infos.data_value", "fields.field_name")
+                      .select("infos.data_value", "fields.field_alias")
 
           # Aggregate data for each cas_id
           aggregated_data = infos.each_with_object({}) do |info, hash|
             # key = "application_#{info.field_name}"
             # hash[key] = info.data_value
-            hash[info.field_name] = info.data_value
+            hash[info.field_alias] = info.data_value
           end
         end
 
