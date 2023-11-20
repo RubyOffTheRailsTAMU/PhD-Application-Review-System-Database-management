@@ -1,0 +1,24 @@
+<h1>Field Details</h1>
+
+<p>
+  <strong>Field Name:</strong>
+  <%= @field.field_name %>
+</p>
+
+<p>
+  <strong>Field Alias:</strong>
+  <%= @field.field_alias %>
+</p>
+
+<p>
+  <strong>Used:</strong>
+  <%= @field.field_used %>
+</p>
+
+<p>
+  <strong>Many:</strong>
+  <%= @field.field_many %>
+</p>
+
+<%= link_to 'Edit', edit_field_path(@field) %> |
+<%= link_to 'Back', fields_path %>
