@@ -33,11 +33,13 @@
         </li>
       <% end %>
     </ul>
-
+  <button onclick="sendResponsesToServer()">Submit Responses</button>
   </div>
 
   <script>
-  function handleChange(select, value) {
+  var responses = {}; // Global variable to store responses
+
+ function handleChange(select, value) {
   var selectedValue = select.value;
   var containerId = "renameBox_" + value;
   var dynamicTextId = "dynamicText_" + value;
@@ -69,14 +71,20 @@
     renameBox.appendChild(newSelect);
 
     // Add event listener to the new select element
+    var previousSelectedValue;
     newSelect.addEventListener("change", function () {
       var selectedValue = newSelect.value;
       // If the selected value is not "Select An Option:", then lock the right select element
       if (selectedValue !== "Select An Option:") {
+        previousSelectedValue = selectedValue;
         disableRightValue(selectedValue);
       } else {
         // Enable the previously locked right select element
-        enableRightValue(value);
+        console.log("In handle change listener");
+        console.log("Value: " + value);
+        console.log("Selected Value: " + selectedValue); 
+        console.log("Previous Selected Value: " + previousSelectedValue);
+        enableRightValue(previousSelectedValue);
       }
     });
   } else {
@@ -87,28 +95,52 @@
     if (previousSelect) {
       previousSelect.remove();
     }
+    // Store the selected value in the responses object
+    responses[value] = selectedValue;
+
+    console.log("In handle change else");
+
+    // Enable the corresponding right select element
+    // enableRightValue(value);
   }
 }
 
+function enableRightValue(value) {
+  var rightSelectId = "rightSelect_" + value;
+  var rightSelect = document.getElementById(rightSelectId);
+  rightSelect.disabled = false;
+  rightSelect.value = "Select An Option:";
+}
 
-    function handleRightChange(select, value) {
-      // If a renaming action is initiated on the right, lock the selector
-      if(optionsDict[value] === true){
-        select.disabled = true;
-      }
-    }
-    function disableRightValue(value){
-      var rightSelectId = "rightSelect_" + value;
-      var rightSelect = document.getElementById(rightSelectId);
-      rightSelect.disabled = true;
-      rightSelect.value = "Renaming " + value;
-    }
-    function enableRightValue(value){
-      var rightSelectId = "rightSelect_" + value;
-      var rightSelect = document.getElementById(rightSelectId);
-      rightSelect.disabled = false;
-      rightSelect.value = "Select An Option:";
-    }
+function disableRightValue(value) {
+  var rightSelectId = "rightSelect_" + value;
+  var rightSelect = document.getElementById(rightSelectId);
+  rightSelect.disabled = true;
+  rightSelect.value = "Renaming " + value;
+}
+
+function sendResponsesToServer() {
+  // Make a Fetch API request to your server endpoint
+  fetch('/applicants/uploads_handler', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      old_fields: responses,
+      new_fields: responses, // Update this line if needed
+    }),
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Response from server:', data);
+    // Handle the response from the server as needed
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    // Handle errors if necessary
+  });
+}
 
   </script>
 </div>
