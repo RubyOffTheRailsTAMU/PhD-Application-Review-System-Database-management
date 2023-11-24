@@ -3,29 +3,11 @@
   <link href="./home.css" rel="stylesheet" />
   <div class="home-container">
     <span class="home-text">Please Handle the following Elements:</span>
-    <span class="home-text1">Old Fields (Not in upload, but in database): </span>
-    <span class="home-text2">New Fields (In upload, but not in database):</span>
+    <span class="home-text1">New Fields (In upload, but not in the database):</span>
+    <span class="home-text2">Old Fields (Not in upload, but in the database):</span>
 
     <ul class="home-ul1 list" id="leftColumn">
-      <% @unique_in_categorized_headers.each do |value| %>
-        <li class="list-item">
-          <span><%= value %></span>
-          <select class="home-select" onchange="handleChange(this, '<%= value %>')">
-            <option value="Select An Option:">Select An Option:</option>
-            <option value="Rename">Rename</option>
-            <option value="Add">Add</option>
-          </select>
-          <div id="renameBox_<%= value %>" style="display: none;">
-            <p id="dynamicText_<%= value %>"></p>
-            <input type="text" id="renameInput_<%= value %>" placeholder="Enter a new name">
-            <button onclick="submitRename('<%= value %>')">Submit</button>
-          </div>
-        </li>
-      <% end %>
-    </ul>
-
-    <ul class="home-ul list" id="rightColumn">
-      <% @unique_in_fields.each do |value| %>
+      <% @old_fields.each do |value| %>
         <li class="list-item">
           <span><%= value %></span>
           <select class="home-select" onchange="handleChange(this, '<%= value %>')">
@@ -33,11 +15,21 @@
             <option value="Rename">Rename</option>
             <option value="Not Used">Not Used</option>
           </select>
-          <div id="renameBox_<%= value %>" style="display: none;">
+          <div id="renameBox_<%= value %>" class="rename-box" style="display: none;">
             <p id="dynamicText_<%= value %>"></p>
-            <input type="text" id="renameInput_<%= value %>" placeholder="Enter a new name">
-            <button onclick="submitRename('<%= value %>')">Submit</button>
           </div>
+        </li>
+      <% end %>
+    </ul>
+
+    <ul class="home-ul list" id="rightColumn">
+      <% @new_fields.each do |value| %>
+        <li class="list-item">
+          <span id="rightElement_<%= value %>"><%= value %></span>
+          <select id="rightSelect_<%= value %>" class="home-select" onchange="handleRightChange(this, '<%= value %>')">
+            <option value="Select An Option:">Select An Option:</option>
+            <option value="Add">Add</option>
+          </select>
         </li>
       <% end %>
     </ul>
@@ -45,27 +37,78 @@
   </div>
 
   <script>
-    function handleChange(select, value) {
-      var selectedValue = select.value;
-      var containerId = "renameBox_" + value;
-      var dynamicTextId = "dynamicText_" + value;
+  function handleChange(select, value) {
+  var selectedValue = select.value;
+  var containerId = "renameBox_" + value;
+  var dynamicTextId = "dynamicText_" + value;
+  var rightSelectId = "rightSelect_" + value;
 
-      var renameBox = document.getElementById(containerId);
-      var dynamicText = document.getElementById(dynamicTextId);
+  var renameBox = document.getElementById(containerId);
+  var dynamicText = document.getElementById(dynamicTextId);
+  var rightSelect = document.getElementById(rightSelectId);
 
-      if (selectedValue === "Rename") {
-        renameBox.style.display = "block";
-        dynamicText.innerText = "Enter a new name for " + value;
+  // Remove previously created select elements
+  var previousSelect = document.getElementById("renameSelect_" + value);
+
+  if (selectedValue === "Rename") {
+    renameBox.style.display = "block";
+    dynamicText.innerText = "Select a new name for " + value;
+
+    // Create a new select element
+    var newSelect = document.createElement("select");
+    newSelect.id = "renameSelect_" + value;
+    newSelect.className = "rename-select";
+    newSelect.innerHTML = '<option value="Select An Option:">Select An Option:</option>';
+
+    // Add options from @new_fields
+    <% @new_fields.each do |new_value| %>
+      newSelect.innerHTML += '<option value="<%= new_value %>"><%= new_value %></option>';
+    <% end %>
+
+    // Append the new select element to the rename box
+    renameBox.appendChild(newSelect);
+
+    // Add event listener to the new select element
+    newSelect.addEventListener("change", function () {
+      var selectedValue = newSelect.value;
+      // If the selected value is not "Select An Option:", then lock the right select element
+      if (selectedValue !== "Select An Option:") {
+        disableRightValue(selectedValue);
       } else {
-        renameBox.style.display = "none";
+        // Enable the previously locked right select element
+        enableRightValue(value);
+      }
+    });
+  } else {
+    // Clean up the renameBox
+    renameBox.style.display = "none";
+    dynamicText.innerText = "";
+
+    if (previousSelect) {
+      previousSelect.remove();
+    }
+  }
+}
+
+
+    function handleRightChange(select, value) {
+      // If a renaming action is initiated on the right, lock the selector
+      if(optionsDict[value] === true){
+        select.disabled = true;
       }
     }
-
-    function submitRename(value) {
-      var inputId = "renameInput_" + value;
-      var newName = document.getElementById(inputId).value;
-      // Do something with the new name (e.g., send it to the server)
-      console.log("New name:", newName);
+    function disableRightValue(value){
+      var rightSelectId = "rightSelect_" + value;
+      var rightSelect = document.getElementById(rightSelectId);
+      rightSelect.disabled = true;
+      rightSelect.value = "Renaming " + value;
     }
+    function enableRightValue(value){
+      var rightSelectId = "rightSelect_" + value;
+      var rightSelect = document.getElementById(rightSelectId);
+      rightSelect.disabled = false;
+      rightSelect.value = "Select An Option:";
+    }
+
   </script>
 </div>

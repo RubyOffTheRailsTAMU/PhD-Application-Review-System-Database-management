@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  get "fields/index"
+  get "fields/show"
+  get "fields/new"
+  get "fields/edit"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -9,9 +13,11 @@ Rails.application.routes.draw do
   resources :uploads, only: [:new, :create]
   get "applicants/savedata"
   get "applicants/process_input"
+  get "applicants/uploads_handler"
   #Login Logic:
   post "/login", to: "welcome#create"
   get "/logout", to: "welcome#destroy"
+  resources :fields
 
   #Logic to clear database:
   get "/clear_database", to: "database_clearing#clear"
@@ -21,6 +27,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :searches, only: [:index]
+      get "field_names", to: "searches#field_names"
     end
   end
 
