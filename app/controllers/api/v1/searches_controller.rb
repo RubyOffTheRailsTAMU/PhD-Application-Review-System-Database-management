@@ -76,11 +76,11 @@ module Api
 
           # Aggregate data for each cas_id
           aggregated_data = infos.each_with_object({}) do |info, hash|
-            if info.field_alias == "cas_id"
-              hash[info.field_alias] = info.data_value.to_i
-            else
-              hash[info.field_alias] = info.data_value
-            end
+            # if info.field_alias == "cas_id"
+            #   hash[info.field_alias] = info.data_value.to_i
+            # else
+            hash[info.field_alias] = info.data_value
+            # end
           end
         end
         # puts @results
