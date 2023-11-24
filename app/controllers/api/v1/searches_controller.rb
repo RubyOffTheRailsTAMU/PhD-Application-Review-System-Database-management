@@ -76,74 +76,13 @@ module Api
 
           # Aggregate data for each cas_id
           aggregated_data = infos.each_with_object({}) do |info, hash|
-            if info.field_alias == "cas_id"
-              hash[info.field_alias] = info.data_value.to_i
-            else
-              hash[info.field_alias] = info.data_value
-            end
-          end
-
-          case operator
-          when '='
-            conditions << "lower(#{key}) = ?"
-            values << value.downcase
-          when '>'
-            conditions << "#{key} > ?"
-            values << value.to_f
-          when '<'
-            conditions << "#{key} < ?"
-            values << value.to_f
-          when '~'
-            conditions << "lower(#{key}) LIKE ?"
-            values << "%#{value.downcase}%"
+            # if info.field_alias == "cas_id"
+            #   hash[info.field_alias] = info.data_value.to_i
+            # else
+            hash[info.field_alias] = info.data_value
+            # end
           end
         end
-        [conditions.join(' AND '), *values]
-      end
-
-      def index
-        query = params[:query]
-        field = params[:field]
-        if query[0] == '*'
-          search_str = query[1..-1] # Get the query string from the request
-          puts "Search string: #{search_str}"
-
-          query, *values = build_query(search_str)
-          # TODO: optimize so joins are only when needed.
-          @results = Applicant.joins(:schools, :toefl, :gre, :application_ielt)
-                              .select('applicants.*, schools.*, toefls.*, gres.*, application_ielts.*')
-                              .distinct
-                              .where(query, *values)
-
-          puts @results.inspect
-        else
-          # TODO: validate fields even tho already done on input.
-          # todo: consider numerical feilds.
-          # @results = Applicant.where("lower(#{field} LIKE ? %#{query.downcase}%)")
-          @results = case field
-                     when 'application_name'
-                       Applicant.where('lower(application_name) LIKE ?', "%#{query.downcase}%")
-                     when 'application_cas_id'
-                       Applicant.where('application_cas_id LIKE ?', "%#{query}%")
-                     when 'application_citizenship_country'
-                       Applicant.where('lower(application_citizenship_country) LIKE ?', "%#{query.downcase}%")
-                     when 'application_degree'
-                       Applicant.where('lower(application_degree) LIKE ?', "%#{query.downcase}%")
-                     else
-                       Applicant.where('lower(application_name) LIKE ?', "%#{query.downcase}%")
-                     end
-        end
-
-        puts @results
-        render json: @results
-      rescue ActiveRecord::StatementInvalid => e
-        # Check for our custom error message, render a relevant JSON response
-        if e.message.start_with?('Invalid column name:')
-          render json: { error: e.message }, status: 400
-        else
-          # Handle other StatementInvalid errors here if necessary
-        end
-
         # puts @results
         render json: @results
       end
