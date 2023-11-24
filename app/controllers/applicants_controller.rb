@@ -1,5 +1,4 @@
 class ApplicantsController < ApplicationController
-
   def uploads_handler
     @x = 5
     @y = 3
@@ -23,6 +22,7 @@ class ApplicantsController < ApplicationController
 
     # get current headers from fields table
     fields = Field.where(field_used: true).pluck(:field_name)
+    #note: cas_id, name, email and degree should always be in fields table
 
     # compute difference between current headers and new headers
     categorized_header_keys = Set.new(categorized_headers.keys)
@@ -41,7 +41,6 @@ class ApplicantsController < ApplicationController
     return unique_in_fields, unique_in_categorized_headers
   end
 
-  def construct_field(field_name, field_alias, field_used, field_many)
     # todo: consider non used fields for new ones too 
     if unique_in_categorized_headers.size > 0
       if unique_in_fields.size > 0 # if there are unique headers AND unique fields
@@ -64,7 +63,6 @@ class ApplicantsController < ApplicationController
       end
     end
 
-
     # Now process each row
     (2..spreadsheet.last_row).each do |i|
       row = spreadsheet.row(i)
@@ -83,7 +81,6 @@ class ApplicantsController < ApplicationController
         puts "key: #{key}"
         puts "field value: #{field_value}"
         field.infos.create(data_value: field_value, cas_id: row[headers.index("cas_id")].to_i.to_s, subgroup: key)
-
       end
     end
   end
@@ -92,10 +89,10 @@ class ApplicantsController < ApplicationController
     categories = {}
 
     headers.each do |header|
-      parts = header.split('_')
+      parts = header.split("_")
       if parts.size > 1 && parts.last.match?(/^\d+$/)
         # It's a header of the form "word1_word2_wordN_digit"
-        key = parts[0...-1].join('_') # All parts except the last one
+        key = parts[0...-1].join("_") # All parts except the last one
         sub_key = parts.last
         (categories[key] ||= {})[sub_key] = header
       else
@@ -105,10 +102,11 @@ class ApplicantsController < ApplicationController
 
     categories
   end
+
   def savedata
     jsonData = getData
     jsonData.each do |data|
-      next if Applicant.exists?(application_cas_id: data['cas_id'])
+      next if Applicant.exists?(application_cas_id: data["cas_id"])
 
       saveOneDate(data)
     end
@@ -118,7 +116,6 @@ class ApplicantsController < ApplicationController
     # Proceed to delete the file.
     File.delete(file_path)
     # render json: { message: "Application data saved successfully. Uploaded file has been deleted." }
-    render 'upload_success'
+    render "upload_success"
   end
-
 end
