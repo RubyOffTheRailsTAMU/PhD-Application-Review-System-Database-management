@@ -37,61 +37,59 @@
   </div>
 
   <script>
-    function handleChange(select, value) {
-      var selectedValue = select.value;
-      var containerId = "renameBox_" + value;
-      var dynamicTextId = "dynamicText_" + value;
-      var rightSelectId = "rightSelect_" + value;
+  function handleChange(select, value) {
+  var selectedValue = select.value;
+  var containerId = "renameBox_" + value;
+  var dynamicTextId = "dynamicText_" + value;
+  var rightSelectId = "rightSelect_" + value;
 
-      var renameBox = document.getElementById(containerId);
-      var dynamicText = document.getElementById(dynamicTextId);
-      var rightSelect = document.getElementById(rightSelectId);
+  var renameBox = document.getElementById(containerId);
+  var dynamicText = document.getElementById(dynamicTextId);
+  var rightSelect = document.getElementById(rightSelectId);
 
-      // Remove previously created select elements
-      var previousSelect = document.querySelector('.rename-select');
-      // if (select.value !== "Rename") {
-      //    previousSelect.remove();
-      // }
+  // Remove previously created select elements
+  var previousSelect = document.getElementById("renameSelect_" + value);
 
-      if (selectedValue === "Rename") {
-        renameBox.style.display = "block";
-        dynamicText.innerText = "Select a new name for " + value;
+  if (selectedValue === "Rename") {
+    renameBox.style.display = "block";
+    dynamicText.innerText = "Select a new name for " + value;
 
-        // Create a new select element
-        var newSelect = document.createElement("select");
-        newSelect.className = "rename-select";
-        newSelect.innerHTML = '<option value="Select An Option:">Select An Option:</option>';
-        
-        // Create a dictionary to keep track of the options
-        //var optionsDict = {};
-        // Add options from @new_fields
-        <% @new_fields.each do |new_value| %>
-          newSelect.innerHTML += '<option value="<%= new_value %>"><%= new_value %></option>';
-          //optionsDict["<%= new_value %>"] = false;
-        <% end %>
-        // Append the new select element to the rename box
-        renameBox.appendChild(newSelect);
+    // Create a new select element
+    var newSelect = document.createElement("select");
+    newSelect.id = "renameSelect_" + value;
+    newSelect.className = "rename-select";
+    newSelect.innerHTML = '<option value="Select An Option:">Select An Option:</option>';
 
-          // Add event listener to the new select element
-          newSelect.addEventListener("change", function() {
-          var selectedValue = newSelect.value;
-          // If the selected value is not "Select An Option:", then lock the right select element
-          if (selectedValue !== "Select An Option:") {
-            disableRightValue(selectedValue);
-          }
-          else{
-            //enable the previously locked right select element
-            console.log("previousSelectedValue: " + previousSelectedValue);
-            console.log("New value: " + selectedValue);
-            enableRightValue(previousSelectedValue);
-          }
-          previousSelectedValue = selectedValue;
-        });
+    // Add options from @new_fields
+    <% @new_fields.each do |new_value| %>
+      newSelect.innerHTML += '<option value="<%= new_value %>"><%= new_value %></option>';
+    <% end %>
+
+    // Append the new select element to the rename box
+    renameBox.appendChild(newSelect);
+
+    // Add event listener to the new select element
+    newSelect.addEventListener("change", function () {
+      var selectedValue = newSelect.value;
+      // If the selected value is not "Select An Option:", then lock the right select element
+      if (selectedValue !== "Select An Option:") {
+        disableRightValue(selectedValue);
       } else {
-        //TODO
-        console.log("Not Used");
+        // Enable the previously locked right select element
+        enableRightValue(value);
       }
+    });
+  } else {
+    // Clean up the renameBox
+    renameBox.style.display = "none";
+    dynamicText.innerText = "";
+
+    if (previousSelect) {
+      previousSelect.remove();
     }
+  }
+}
+
 
     function handleRightChange(select, value) {
       // If a renaming action is initiated on the right, lock the selector
