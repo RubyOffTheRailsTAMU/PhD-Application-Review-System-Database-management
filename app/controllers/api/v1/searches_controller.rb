@@ -5,36 +5,70 @@ module Api
       # skip_before_action :verify_authenticity_token
       before_action :authenticate_request
 
-      # In SearchesController
       def field_names
-        # name id should map tp
         fields = Field.all
         render json: fields
       end
 
       def index
+        puts "enter index"
+        #back end validation
         field = params[:field]
-        unless Field.where(field_used: true, field_name: field).exists?
+        unless Field.where(field_used: true, field_alias: field).exists?
           render json: { error: "Invalid search field" }, status: :bad_request
           return
         end
 
         # Step 2: Retrieve the query parameter
         query = params[:query]
+        # Check if it's an advanced search
+        if query.start_with?("*")
+          puts "advanced search"
+          query_string = query[1..-1] # Remove the '*'
+          parsed_queries = parse_query_string(query_string)
 
-        # Step 3: Search in the Info table for matching records
-        matched_cas_ids = Info.where("#{field} LIKE ?", "%#{query}%").pluck(:cas_id).uniq
+          # Step 2: Dynamically build the query
+          matched_cas_ids_sets = []
+          parsed_queries.each do |field, op, value|
+            puts "field: #{field}, op: #{op}, value: #{value}"
+            field_record = Field.find_by(field_used: true, field_alias: field)
+            if field_record
+              case op
+              when "~"
+                matched_cas_ids_sets << Info.joins(:field)
+                  .where("fields.id = ? AND CAST(infos.data_value AS TEXT) ILIKE ?", field_record.id, "%#{value}%")
+                  .pluck(:cas_id).uniq
+              when "="
+                matched_cas_ids_sets << Info.joins(:field)
+                  .where("fields.id = ? AND infos.data_value = ?", field_record.id, value)
+                  .pluck(:cas_id).uniq
+              when "<", ">"
+                if numeric?(value)
+                  matched_cas_ids_sets << Info.joins(:field)
+                    .where("fields.id = ? AND infos.data_value #{op} ?", field_record.id, value.to_f)
+                    .pluck(:cas_id).uniq
+                else
+                  render json: { error: "Non-numeric value for numeric operation on field: #{field}" }, status: :bad_request
+                  return
+                end
+              end
+            else
+              render json: { error: "Invalid search field: #{field}" }, status: :bad_request
+              return
+            end
+          end
 
-        # # Step 4: Retrieve all related records from Info table grouped by cas_id
-        # @results = matched_cas_ids.each_with_object({}) do |cas_id, grouped_results|
-        #   grouped_results[cas_id] = Info.where(cas_id: cas_id).pluck(:field_id, :data_value)
-        # end
-        # @results = matched_cas_ids.each_with_object({}) do |cas_id, grouped_results|
-        #   infos = Info.joins(:field) # Update this join as per your schema
-        #               .where(cas_id: cas_id)
-        #               .select("infos.data_value", "fields.field_name")
-        #   grouped_results[cas_id] = infos.map { |info| { field_name: info.field_name, data: info.data_value } }
-        # end
+          # Intersecting the sets of matched cas_ids from each condition
+          if matched_cas_ids_sets.present?
+            matched_cas_ids = matched_cas_ids_sets.reduce(:&)
+            puts "Matched CAS IDs: #{matched_cas_ids.inspect}"
+          else
+            render json: { error: "No valid conditions found in query" }, status: :bad_request
+          end
+        else
+          # basic arse botch
+          matched_cas_ids = Info.where("#{field} LIKE ?", "%#{query}%").pluck(:cas_id).uniq
+        end
         @results = matched_cas_ids.map do |cas_id|
           infos = Info.joins(:field)
                       .where(cas_id: cas_id)
@@ -48,8 +82,19 @@ module Api
           end
         end
 
-        puts @results
+        # puts @results
         render json: @results
+      end
+
+      def parse_query_string(query_string)
+        query_string.split(" ").map do |query|
+          field, op, value = query.split(/(=|~|>|<)/)
+          [field, op, value]
+        end
+      end
+
+      def numeric?(string)
+        true if Float(string) rescue false
       end
 
       private
