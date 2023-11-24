@@ -2,7 +2,11 @@ class ApplicantsController < ApplicationController
   def uploads_handler
     @x = 5
     @y = 3
-    render "uploads_handler"
+    old_fields, new_fields = process_input #Get old and new fields from process_input
+
+    @old_fields = old_fields
+    @new_fields = new_fields
+    render 'applicants/uploads_handler'
   end
 
   def process_input
@@ -34,12 +38,16 @@ class ApplicantsController < ApplicationController
     # comment one or the other for testing of logic below.
     # unique_in_fields = {}
     # unique_in_categorized_headers = {}
+    return unique_in_fields, unique_in_categorized_headers
+  end
 
-    # todo: consider non used fields for new ones too
+    # todo: consider non used fields for new ones too 
     if unique_in_categorized_headers.size > 0
       if unique_in_fields.size > 0 # if there are unique headers AND unique fields
-        # wait for user input
+        #render 'applicants/uploads_handler'
+        render 'applicants/uploads_handler', locals: {old_fields: @old_fields, new_fields: @new_fields }
         print("user input needed\n")
+        exit
       else # only new headers, add to fields table
         unique_in_categorized_headers.each do |header|
           is_many = categorized_headers[header].is_a?(Hash)
