@@ -1,14 +1,16 @@
 class ApplicantsController < ApplicationController
-
-protect_from_forgery with: :null_session
+  protect_from_forgery with: :null_session
 
   def uploads_handler
-    old_fields, new_fields = process_input #Get old and new fields from process_input
+    old_fields, new_fields, user_input_needed = process_input #Get old and new fields from process_input
 
     @old_fields = old_fields
     @new_fields = new_fields
-
-    render 'applicants/uploads_handler'
+    if user_input_needed
+      render "applicants/uploads_handler"
+    else
+      rename_me_later(nil, nil)
+    end
   end
 
   def uploads_handler_post
@@ -18,11 +20,10 @@ protect_from_forgery with: :null_session
 
     puts "old_fields: #{old_fields_json}"
     puts "new_fields: #{new_fields_json}"
-
+    rename_me_later(old_fields_json, new_fields_json)
     # Optionally, you can render a response or redirect to another page
-    render json: { message: 'Data received successfully' }
+    render json: { message: "Data received successfully" }
   end
-
 
   def process_input
     excel_file_path = session[:excel_file_path] # Get file path from session
@@ -53,17 +54,12 @@ protect_from_forgery with: :null_session
     # comment one or the other for testing of logic below.
     # unique_in_fields = {}
     # unique_in_categorized_headers = {}
-    return unique_in_fields, unique_in_categorized_headers
-  end
+    # todo: consider non used fields for new ones too
 
-  def rename_me_later
-    # todo: consider non used fields for new ones too 
+    user_input_needed = false
     if unique_in_categorized_headers.size > 0
       if unique_in_fields.size > 0 # if there are unique headers AND unique fields
-        #render 'applicants/uploads_handler'
-        render 'applicants/uploads_handler', locals: {old_fields: @old_fields, new_fields: @new_fields }
-        print("user input needed\n")
-        exit
+        user_input_needed = true
       else # only new headers, add to fields table
         unique_in_categorized_headers.each do |header|
           is_many = categorized_headers[header].is_a?(Hash)
@@ -78,6 +74,26 @@ protect_from_forgery with: :null_session
         Field.find_by(field_name: field).update(field_used: false)
       end
     end
+    return unique_in_fields, unique_in_categorized_headers, user_input_needed
+  end
+
+  def rename_me_later(old_fields_json, new_fields_json)
+    puts "hey i just met you, and this is crazy, but here's my number, so remane me later"
+    if old_fields_json.nil? || new_fields_json.nil?
+      puts "old_fields_json or new_fields_json is nil"
+    end
+
+    # todo: update fields table with new field values from jsons
+
+    excel_file_path = session[:excel_file_path] # Get file path from session
+    spreadsheet = Roo::Excelx.new(excel_file_path) # New, uses file path from session
+    spreadsheet.default_sheet = spreadsheet.sheets.first
+
+    field_headers = spreadsheet.row(1)
+
+    # Process the headers
+    headers = spreadsheet.row(1)
+    categorized_headers = process_headers(headers)
 
     # Now process each row
     (2..spreadsheet.last_row).each do |i|
@@ -99,6 +115,7 @@ protect_from_forgery with: :null_session
         field.infos.create(data_value: field_value, cas_id: row[headers.index("cas_id")].to_i.to_s, subgroup: key)
       end
     end
+    render "upload_success"
   end
 
   def process_headers(headers)
