@@ -1,4 +1,7 @@
 class ApplicantsController < ApplicationController
+
+protect_from_forgery with: :null_session
+
   def uploads_handler
     @x = 5
     @y = 3
