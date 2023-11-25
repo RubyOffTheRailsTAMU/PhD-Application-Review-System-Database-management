@@ -37,17 +37,29 @@
   </div>
 
   <script>
-  var responses = {}; // Global variable to store responses
+  var responsesDictionary = {};
 
  function handleChange(select, value) {
   var selectedValue = select.value;
   var containerId = "renameBox_" + value;
   var dynamicTextId = "dynamicText_" + value;
+  var dynamicSelectValue = "renameSelect_" + value;
   var rightSelectId = "rightSelect_" + value;
+
+  // Create or get the dictionary entry for the current value
+  if (!responsesDictionary[value]) {
+    responsesDictionary[value] = {
+      selectedValue: selectedValue,
+      dynamicTextId: dynamicTextId,
+      dynamicSelectValue: dynamicSelectValue
+    };
+  } else {
+    // Update the selected value for existing entries
+    responsesDictionary[value].selectedValue = selectedValue;
+  }
 
   var renameBox = document.getElementById(containerId);
   var dynamicText = document.getElementById(dynamicTextId);
-  var rightSelect = document.getElementById(rightSelectId);
 
   // Remove previously created select elements
   var previousSelect = document.getElementById("renameSelect_" + value);
@@ -71,21 +83,51 @@
     renameBox.appendChild(newSelect);
 
     // Add event listener to the new select element
-    var previousSelectedValue;
-    newSelect.addEventListener("change", function () {
+      var previousSelectedValue;
+      newSelect.addEventListener("change", function () {
       var selectedValue = newSelect.value;
       // If the selected value is not "Select An Option:", then lock the right select element
+       // Iterate through all newSelect boxes
+      document.querySelectorAll('.newSelect').forEach(function (newSelectBox) {
+        // Skip the current newSelect box
+        if (newSelectBox === newSelect) {
+          return;
+        }
+
+        // Iterate through all options in the current newSelect box
+        newSelectBox.querySelectorAll('option').forEach(function (option) {
+          var optionValue = option.value;
+
+          // Skip the selected option in the current newSelect box
+          if (optionValue === selectedValue || optionValue === "Select An Option:") {
+            return;
+          }
+
+          // Unlock the corresponding value on the right side
+          enableRightValue(optionValue);
+        });
+      });
       if (selectedValue !== "Select An Option:") {
+        console.log("In handle change listener if");
+        console.log("Value: " + value);
+        console.log("Selected Value: " + selectedValue);
+        console.log("Previous Selected Value: " + previousSelectedValue);
         previousSelectedValue = selectedValue;
+        responsesDictionary[value].dynamicSelectValue = selectedValue;
         disableRightValue(selectedValue);
+        //enableRightValue(previousSelectedValue);
+
       } else {
         // Enable the previously locked right select element
-        console.log("In handle change listener");
+        console.log("In handle change listener else");
         console.log("Value: " + value);
         console.log("Selected Value: " + selectedValue); 
+        responsesDictionary[value].dynamicSelectValue = selectedValue;
         console.log("Previous Selected Value: " + previousSelectedValue);
         enableRightValue(previousSelectedValue);
       }
+      console.log("Responses Dictionary:", responsesDictionary);
+
     });
   } else {
     // Clean up the renameBox
@@ -95,14 +137,27 @@
     if (previousSelect) {
       previousSelect.remove();
     }
-    // Store the selected value in the responses object
-    responses[value] = selectedValue;
+    // Store the selected value in the dictionary
+    responsesDictionary[value].selectedValue = selectedValue;
 
     console.log("In handle change else");
 
     // Enable the corresponding right select element
     // enableRightValue(value);
   }
+  console.log("Responses Dictionary:", responsesDictionary);
+}
+var rightColumnResponses = {};
+
+function handleRightChange(select, value) {
+  // Get the selected value from the right select element
+  var selectedValue = select.value;
+
+  // Store the selected value in the rightColumnResponses object
+  rightColumnResponses[value] = selectedValue;
+
+  // Log the selected value for debugging (you can remove this in the production code)
+  console.log("Selected Value in rightColumnResponses:", rightColumnResponses);
 }
 
 function enableRightValue(value) {
@@ -127,8 +182,8 @@ function sendResponsesToServer() {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      old_fields: responses,
-      new_fields: responses, // Update this line if needed
+      old_fields: responsesDictionary,
+      new_fields: rightColumnResponses,
     }),
   })
   .then(response => response.json())
@@ -141,6 +196,5 @@ function sendResponsesToServer() {
     // Handle errors if necessary
   });
 }
-
   </script>
 </div>
