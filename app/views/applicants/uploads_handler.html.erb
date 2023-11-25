@@ -182,8 +182,8 @@ function sendResponsesToServer() {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      old_fields: responsesDictionary,
-      new_fields: rightColumnResponses,
+      old_fields_json: responsesDictionary,
+      new_fields_json: rightColumnResponses,
     }),
   })
   .then(response => response.json())

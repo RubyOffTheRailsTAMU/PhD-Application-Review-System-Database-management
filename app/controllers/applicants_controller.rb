@@ -3,14 +3,26 @@ class ApplicantsController < ApplicationController
 protect_from_forgery with: :null_session
 
   def uploads_handler
-    @x = 5
-    @y = 3
     old_fields, new_fields = process_input #Get old and new fields from process_input
 
     @old_fields = old_fields
     @new_fields = new_fields
+
     render 'applicants/uploads_handler'
   end
+
+  def uploads_handler_post
+    # Access data from the client
+    old_fields_json = params[:old_fields_json]
+    new_fields_json = params[:new_fields_json]
+
+    puts "old_fields: #{old_fields_json}"
+    puts "new_fields: #{new_fields_json}"
+
+    # Optionally, you can render a response or redirect to another page
+    render json: { message: 'Data received successfully' }
+  end
+
 
   def process_input
     excel_file_path = session[:excel_file_path] # Get file path from session

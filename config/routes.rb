@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   get "applicants/savedata"
   get "applicants/process_input"
   get "applicants/uploads_handler"
-  post '/applicants/uploads_handler', to: 'applicants#uploads_handler'
+  post '/applicants/uploads_handler', to: 'applicants#uploads_handler_post'
 
   #Login Logic:
   post "/login", to: "welcome#create"
