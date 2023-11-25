@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_11_17_184551) do
+ActiveRecord::Schema[7.1].define(version: 2023_11_20_071557) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -276,7 +276,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_17_184551) do
     t.string "review_info"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "rating"
+    t.integer "rating", default: 0
     t.string "status"
     t.boolean "gar"
     t.boolean "gat"
@@ -298,16 +298,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_17_184551) do
     t.string "subgroup_name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "tags", force: :cascade do |t|
-    t.string "name"
-    t.bigint "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "cas_id"
-    t.index ["cas_id"], name: "index_tags_on_cas_id"
-    t.index ["user_id"], name: "index_tags_on_user_id"
   end
 
   create_table "tasks", force: :cascade do |t|

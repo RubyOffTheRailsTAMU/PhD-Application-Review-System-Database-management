@@ -10,6 +10,11 @@ module Api
         render json: fields
       end
 
+      def allapplicants
+        applicants = Applicant.all
+        render json: applicants
+      end
+
       def index
         puts "enter index"
         #back end validation
@@ -102,8 +107,10 @@ module Api
 
       def authenticate_request
         token = request.headers["Authorization"].to_s.split(" ").last
+        puts token
         begin
           decoded_token = JWT.decode(token, JWT_PUBLIC_KEY, true, algorithm: JWT_ALGORITHM)
+          puts decoded_token  
           puts "user_email: " + decoded_token[0]["user_email"]
         rescue JWT::DecodeError
           render json: { error: "Invalid token" }, status: :unauthorized

@@ -30,6 +30,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :searches, only: [:index]
       get "field_names", to: "searches#field_names"
+      get "allapplicants", to: "searches#allapplicants"
     end
   end
 
