@@ -41,6 +41,7 @@ class ApplicantsController < ApplicationController
     return unique_in_fields, unique_in_categorized_headers
   end
 
+  def rename_me_later
     # todo: consider non used fields for new ones too 
     if unique_in_categorized_headers.size > 0
       if unique_in_fields.size > 0 # if there are unique headers AND unique fields
