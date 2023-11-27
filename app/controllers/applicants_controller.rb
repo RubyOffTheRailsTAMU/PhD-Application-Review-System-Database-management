@@ -1,12 +1,28 @@
 class ApplicantsController < ApplicationController
+  protect_from_forgery with: :null_session
+
   def uploads_handler
-    @x = 5
-    @y = 3
-    old_fields, new_fields = process_input #Get old and new fields from process_input
+    old_fields, new_fields, user_input_needed = process_input # Get old and new fields from process_input
 
     @old_fields = old_fields
     @new_fields = new_fields
-    render 'applicants/uploads_handler'
+    if user_input_needed
+      render 'applicants/uploads_handler'
+    else
+      rename_me_later(nil, nil)
+    end
+  end
+
+  def uploads_handler_post
+    # Access data from the client
+    old_fields_json = params[:old_fields_json]
+    new_fields_json = params[:new_fields_json]
+
+    puts "old_fields: #{old_fields_json}"
+    puts "new_fields: #{new_fields_json}"
+    rename_me_later(old_fields_json, new_fields_json)
+    # Optionally, you can render a response or redirect to another page
+    render json: { message: 'Data received successfully' }
   end
 
   def process_input
@@ -22,7 +38,7 @@ class ApplicantsController < ApplicationController
 
     # get current headers from fields table
     fields = Field.where(field_used: true).pluck(:field_name)
-    #note: cas_id, name, email and degree should always be in fields table
+    # NOTE: cas_id, name, email and degree should always be in fields table
 
     # compute difference between current headers and new headers
     categorized_header_keys = Set.new(categorized_headers.keys)
@@ -38,17 +54,12 @@ class ApplicantsController < ApplicationController
     # comment one or the other for testing of logic below.
     # unique_in_fields = {}
     # unique_in_categorized_headers = {}
-    return unique_in_fields, unique_in_categorized_headers
-  end
+    # todo: consider non used fields for new ones too
 
-  def rename_me_later
-    # todo: consider non used fields for new ones too 
+    user_input_needed = false
     if unique_in_categorized_headers.size > 0
       if unique_in_fields.size > 0 # if there are unique headers AND unique fields
-        #render 'applicants/uploads_handler'
-        render 'applicants/uploads_handler', locals: {old_fields: @old_fields, new_fields: @new_fields }
-        print("user input needed\n")
-        exit
+        user_input_needed = true
       else # only new headers, add to fields table
         unique_in_categorized_headers.each do |header|
           is_many = categorized_headers[header].is_a?(Hash)
@@ -63,6 +74,24 @@ class ApplicantsController < ApplicationController
         Field.find_by(field_name: field).update(field_used: false)
       end
     end
+    [unique_in_fields, unique_in_categorized_headers, user_input_needed]
+  end
+
+  def rename_me_later(old_fields_json, new_fields_json)
+    puts "hey i just met you, and this is crazy, but here's my number, so remane me later"
+    puts 'old_fields_json or new_fields_json is nil' if old_fields_json.nil? || new_fields_json.nil?
+
+    # TODO: update fields table with new field values from jsons
+
+    excel_file_path = session[:excel_file_path] # Get file path from session
+    spreadsheet = Roo::Excelx.new(excel_file_path) # New, uses file path from session
+    spreadsheet.default_sheet = spreadsheet.sheets.first
+
+    field_headers = spreadsheet.row(1)
+
+    # Process the headers
+    headers = spreadsheet.row(1)
+    categorized_headers = process_headers(headers)
 
     # Now process each row
     (2..spreadsheet.last_row).each do |i|
@@ -70,30 +99,31 @@ class ApplicantsController < ApplicationController
 
       categorized_headers.each do |key, header_value|
         field_value = if header_value.is_a?(Hash)
-            # For 'many' headers, collapse the dictionary to just the values as comma-separated
-            values_array = header_value.keys.map { |sub_key| row[headers.index(header_value[sub_key])] }
-            values_array.join(", ")
-          else
-            # For regular headers, fetch the value directly from the row
-            row[headers.index(header_value)] || ""
-          end
+                        # For 'many' headers, collapse the dictionary to just the values as comma-separated
+                        values_array = header_value.keys.map { |sub_key| row[headers.index(header_value[sub_key])] }
+                        values_array.join(', ')
+                      else
+                        # For regular headers, fetch the value directly from the row
+                        row[headers.index(header_value)] || ''
+                      end
 
         field = Field.find_by(field_name: key)
         puts "key: #{key}"
         puts "field value: #{field_value}"
-        field.infos.create(data_value: field_value, cas_id: row[headers.index("cas_id")].to_i.to_s, subgroup: key)
+        field.infos.create(data_value: field_value, cas_id: row[headers.index('cas_id')].to_i.to_s, subgroup: key)
       end
     end
+    render 'upload_success'
   end
 
   def process_headers(headers)
     categories = {}
 
     headers.each do |header|
-      parts = header.split("_")
+      parts = header.split('_')
       if parts.size > 1 && parts.last.match?(/^\d+$/)
         # It's a header of the form "word1_word2_wordN_digit"
-        key = parts[0...-1].join("_") # All parts except the last one
+        key = parts[0...-1].join('_') # All parts except the last one
         sub_key = parts.last
         (categories[key] ||= {})[sub_key] = header
       else
@@ -107,7 +137,7 @@ class ApplicantsController < ApplicationController
   def savedata
     jsonData = getData
     jsonData.each do |data|
-      next if Applicant.exists?(application_cas_id: data["cas_id"])
+      next if Applicant.exists?(application_cas_id: data['cas_id'])
 
       saveOneDate(data)
     end
@@ -117,6 +147,6 @@ class ApplicantsController < ApplicationController
     # Proceed to delete the file.
     File.delete(file_path)
     # render json: { message: "Application data saved successfully. Uploaded file has been deleted." }
-    render "upload_success"
+    render 'upload_success'
   end
 end

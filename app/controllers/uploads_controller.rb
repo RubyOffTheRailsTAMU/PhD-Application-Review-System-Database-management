@@ -15,7 +15,7 @@ class UploadsController < ApplicationController
         session[:excel_file_path] = file.path # Add file path to session. It will contain the file path from the last uploaded file.
         #flash[:success] = 'File uploaded successfully!'
         # redirect_to '/applicants/savedata'
-        redirect_to "/applicants/process_input"
+        redirect_to "/applicants/uploads_handler"
       end
     elsif uploaded_file && (uploaded_file.content_type != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || uploaded_file.content_type != "application/vnd.ms-excel" || uploaded_file.content_type != "text/csv")
       flash[:error] = "Invalid file format! Please upload a file of type .xlsx, .xls or .csv"
