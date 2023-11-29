@@ -1,24 +1,34 @@
-<h1>Field Details</h1>
-
-<p>
-  <strong>Field Name:</strong>
-  <%= @field.field_name %>
-</p>
-
-<p>
-  <strong>Field Alias:</strong>
-  <%= @field.field_alias %>
-</p>
-
-<p>
-  <strong>Used:</strong>
-  <%= @field.field_used %>
-</p>
-
-<p>
-  <strong>Many:</strong>
-  <%= @field.field_many %>
-</p>
-
-<%= link_to 'Edit', edit_field_path(@field) %> |
-<%= link_to 'Back', fields_path %>
+<!-- Add a class to the body for overall styling -->
+<div class="fields-body container mt-4">
+  <h1 class="fields-primary-color mb-3">Field Details</h1>
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title fields-primary-color"><%= @field.field_name %></h4>
+      <table class="fields-table">
+        <tbody>
+          <tr>
+            <th>Field Name</th>
+            <td><%= @field.field_name %></td>
+          </tr>
+          <tr>
+            <th>Field Alias</th>
+            <td><%= @field.field_alias %></td>
+          </tr>
+          <tr>
+            <th>Used</th>
+            <td><%= @field.field_used %></td>
+          </tr>
+          <tr>
+            <th>Many</th>
+            <td><%= @field.field_many %></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="mt-3">
+    <!-- Convert links to buttons using the provided CSS classes -->
+    <%= link_to 'Edit', edit_field_path(@field), class: 'fields-link-button' %>
+    <%= link_to 'Back to Fields', fields_path, class: 'fields-link-button' %>
+  </div>
+</div>

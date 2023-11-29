@@ -1,6 +1,6 @@
 <%= form_with(model: field, local: true) do |form| %>
   <% if field.errors.any? %>
-    <div id="error_explanation">
+    <div id="error_explanation" class="fields-primary-color">
       <h2><%= pluralize(field.errors.count, "error") %> prohibited this field from being saved:</h2>
 
       <ul>
@@ -32,6 +32,6 @@
   </div>
 
   <div class="actions">
-    <%= form.submit %>
+    <%= form.submit class: "fields-button" %>
   </div>
 <% end %>

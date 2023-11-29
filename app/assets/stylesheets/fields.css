@@ -1,0 +1,54 @@
+/* fields.css */
+
+.fields-body {
+    font-family: Arial, sans-serif;
+  }
+  
+  .fields-primary-color {
+    color: #500000;
+  }
+  
+  .fields-primary-bg-color {
+    background-color: #500000;
+  }
+  
+  .fields-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .fields-table th, .fields-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  .fields-table th {
+    background-color: #500000;
+    color: white;
+  }
+  
+  .fields-button, .fields-link-button {
+    background-color: #500000;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
+  
+  .fields-button:hover, .fields-link-button:hover {
+    background-color: #400000;
+  }
+  
+  .fields-link {
+    color: #500000;
+    text-decoration: none;
+  }
+  
+  .fields-link:hover {
+    text-decoration: underline;
+  }
+  
