@@ -11,7 +11,7 @@ module Api
       end
 
       def allapplicants
-        applicants = Applicant.all
+        applicants = Info.all.pluck(:cas_id).uniq
         render json: applicants
       end
 
