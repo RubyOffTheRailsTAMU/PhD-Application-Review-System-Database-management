@@ -1,11 +1,12 @@
 class ApplicantsController < ApplicationController
-  protect_from_forgery with: :null_session
+  skip_before_action :verify_authenticity_token
 
   def uploads_handler
-    old_fields, new_fields, user_input_needed = process_input # Get old and new fields from process_input
-
+    old_fields, new_fields, user_input_needed, excel_file_path = process_input #Get old and new fields from process_input
+    puts "excel_file_path righhht now: #{excel_file_path}"
     @old_fields = old_fields
     @new_fields = new_fields
+    @excel_file_path = excel_file_path
     if user_input_needed
       render 'applicants/uploads_handler'
     else
@@ -15,11 +16,14 @@ class ApplicantsController < ApplicationController
 
   def uploads_handler_post
     # Access data from the client
+
     old_fields_json = params[:old_fields_json]
     new_fields_json = params[:new_fields_json]
+    excel_file_path = params[:excel_file_path]
 
     puts "old_fields: #{old_fields_json}"
     puts "new_fields: #{new_fields_json}"
+    puts "excel_file_path: #{excel_file_path}"
     rename_me_later(old_fields_json, new_fields_json)
     # Optionally, you can render a response or redirect to another page
     render json: { message: 'Data received successfully' }
@@ -73,18 +77,21 @@ class ApplicantsController < ApplicationController
         print("field name: #{field}\n")
         Field.find_by(field_name: field).update(field_used: false)
       end
-    end
-    [unique_in_fields, unique_in_categorized_headers, user_input_needed]
+    return unique_in_fields, unique_in_categorized_headers, user_input_needed, excel_file_path
   end
 
   def rename_me_later(old_fields_json, new_fields_json)
-    puts "hey i just met you, and this is crazy, but here's my number, so remane me later"
-    puts 'old_fields_json or new_fields_json is nil' if old_fields_json.nil? || new_fields_json.nil?
+    excel_file_path = session[:excel_file_path] # Get file path from session
+    puts "excel_file_path RENAME ME SEXY: #{excel_file_path}"
+
+    if old_fields_json.nil? || new_fields_json.nil?
+      puts "old_fields_json or new_fields_json is nil"
+    end
+
 
     # TODO: update fields table with new field values from jsons
 
-    excel_file_path = session[:excel_file_path] # Get file path from session
-    spreadsheet = Roo::Excelx.new(excel_file_path) # New, uses file path from session
+    spreadsheet = Roo::Excelx.new(session[:excel_file_path]) # New, uses file path from session
     spreadsheet.default_sheet = spreadsheet.sheets.first
 
     field_headers = spreadsheet.row(1)
