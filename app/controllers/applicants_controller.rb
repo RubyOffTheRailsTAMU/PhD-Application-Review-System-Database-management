@@ -2,13 +2,13 @@ class ApplicantsController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def uploads_handler
-    old_fields, new_fields, user_input_needed, excel_file_path = process_input # Get old and new fields from process_input
+    old_fields, new_fields, user_input_needed, excel_file_path = process_input #Get old and new fields from process_input
     puts "excel_file_path righhht now: #{excel_file_path}"
     @old_fields = old_fields
     @new_fields = new_fields
     @excel_file_path = excel_file_path
     if user_input_needed
-      render 'applicants/uploads_handler'
+      render "applicants/uploads_handler"
     else
       rename_me_later(nil, nil)
     end
@@ -26,7 +26,7 @@ class ApplicantsController < ApplicationController
     puts "excel_file_path: #{excel_file_path}"
     rename_me_later(old_fields_json, new_fields_json)
     # Optionally, you can render a response or redirect to another page
-    render json: { message: 'Data received successfully' }
+    render json: { message: "Data received successfully" }
   end
 
   def process_input
@@ -42,7 +42,7 @@ class ApplicantsController < ApplicationController
 
     # get current headers from fields table
     fields = Field.where(field_used: true).pluck(:field_name)
-    # NOTE: cas_id, name, email and degree should always be in fields table
+    #note: cas_id, name, email and degree should always be in fields table
 
     # compute difference between current headers and new headers
     categorized_header_keys = Set.new(categorized_headers.keys)
@@ -78,7 +78,7 @@ class ApplicantsController < ApplicationController
         Field.find_by(field_name: field).update(field_used: false)
       end
     end
-    [unique_in_fields, unique_in_categorized_headers, user_input_needed, excel_file_path]
+    return unique_in_fields, unique_in_categorized_headers, user_input_needed, excel_file_path
   end
 
   def rename_me_later(old_fields_json, new_fields_json)
@@ -86,9 +86,11 @@ class ApplicantsController < ApplicationController
     puts "excel_file_path RENAME ME SEXY: #{excel_file_path}"
     puts "hey i just met you, and this is crazy, but here's my number, so remane me later"
 
-    puts 'old_fields_json or new_fields_json is nil' if old_fields_json.nil? || new_fields_json.nil?
+    if old_fields_json.nil? || new_fields_json.nil?
+      puts "old_fields_json or new_fields_json is nil"
+    end
 
-    # TODO: update fields table with new field values from jsons
+    # todo: update fields table with new field values from jsons
 
     spreadsheet = Roo::Excelx.new(session[:excel_file_path]) # New, uses file path from session
     spreadsheet.default_sheet = spreadsheet.sheets.first
@@ -105,31 +107,31 @@ class ApplicantsController < ApplicationController
 
       categorized_headers.each do |key, header_value|
         field_value = if header_value.is_a?(Hash)
-                        # For 'many' headers, collapse the dictionary to just the values as comma-separated
-                        values_array = header_value.keys.map { |sub_key| row[headers.index(header_value[sub_key])] }
-                        values_array.join(', ')
-                      else
-                        # For regular headers, fetch the value directly from the row
-                        row[headers.index(header_value)] || ''
-                      end
+            # For 'many' headers, collapse the dictionary to just the values as comma-separated
+            values_array = header_value.keys.map { |sub_key| row[headers.index(header_value[sub_key])] }
+            values_array.join(", ")
+          else
+            # For regular headers, fetch the value directly from the row
+            row[headers.index(header_value)] || ""
+          end
 
         field = Field.find_by(field_name: key)
         puts "key: #{key}"
         puts "field value: #{field_value}"
-        field.infos.create(data_value: field_value, cas_id: row[headers.index('cas_id')].to_i.to_s, subgroup: key)
+        field.infos.create(data_value: field_value, cas_id: row[headers.index("cas_id")].to_i.to_s, subgroup: key)
       end
     end
-    render 'upload_success'
+    render "upload_success"
   end
 
   def process_headers(headers)
     categories = {}
 
     headers.each do |header|
-      parts = header.split('_')
+      parts = header.split("_")
       if parts.size > 1 && parts.last.match?(/^\d+$/)
         # It's a header of the form "word1_word2_wordN_digit"
-        key = parts[0...-1].join('_') # All parts except the last one
+        key = parts[0...-1].join("_") # All parts except the last one
         sub_key = parts.last
         (categories[key] ||= {})[sub_key] = header
       else
@@ -143,7 +145,7 @@ class ApplicantsController < ApplicationController
   def savedata
     jsonData = getData
     jsonData.each do |data|
-      next if Applicant.exists?(application_cas_id: data['cas_id'])
+      next if Applicant.exists?(application_cas_id: data["cas_id"])
 
       saveOneDate(data)
     end
@@ -153,6 +155,6 @@ class ApplicantsController < ApplicationController
     # Proceed to delete the file.
     File.delete(file_path)
     # render json: { message: "Application data saved successfully. Uploaded file has been deleted." }
-    render 'upload_success'
+    render "upload_success"
   end
 end
