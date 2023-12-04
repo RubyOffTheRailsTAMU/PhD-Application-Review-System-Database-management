@@ -44,9 +44,16 @@ gem 'csv'
 
 # xlsx to JSON
 gem 'roo'
+
 # zip file processing
 gem 'rubyzip', '~> 2.3', '>= 2.3.2'
 gem 'fileutils', '~> 0.7.2'
+
+#PDF parsing
+gem 'pdf-reader', '~> 1.4'
+
+#base 64 gem
+gem 'base64', '~> 0.1.0'
 
 # Use Redis adapter to run Action Cable in production
 # gem "redis", "~> 4.0"
