@@ -28,7 +28,9 @@ class UploadsController < ApplicationController
           #extract file
           entry.extract(Rails.root.join("public", "uploads", "PDF", filename))
         end
+        flash[:success] = 'PDF uploaded successfully!'
       end
+      redirect_to "/uploads/new"
     else
       File.open(Rails.root.join("public", "uploads", filename), "wb") do |file|
         file.write(uploaded_file.read)
