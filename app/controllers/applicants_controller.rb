@@ -31,7 +31,13 @@ class ApplicantsController < ApplicationController
 
   def process_input
     excel_file_path = session[:excel_file_path] # Get file path from session
-    spreadsheet = Roo::Excelx.new(excel_file_path) # New, uses file path from session
+    #check if excel or csv file
+    if excel_file_path.end_with?(".xlsx") || excel_file_path.end_with?(".xls")
+      spreadsheet = Roo::Excelx.new(excel_file_path) # New, uses file path from session
+    elsif excel_file_path.end_with?(".csv")
+      spreadsheet = Roo::CSV.new(excel_file_path) # New, uses file path from session
+    end
+
     spreadsheet.default_sheet = spreadsheet.sheets.first
 
     field_headers = spreadsheet.row(1)
@@ -92,7 +98,15 @@ class ApplicantsController < ApplicationController
 
     # todo: update fields table with new field values from jsons
 
-    spreadsheet = Roo::Excelx.new(session[:excel_file_path]) # New, uses file path from session
+    #spreadsheet = Roo::Excelx.new(session[:excel_file_path]) # New, uses file path from session
+
+    #check if excel or csv file
+    if excel_file_path.end_with?(".xlsx") || excel_file_path.end_with?(".xls")
+      spreadsheet = Roo::Excelx.new(excel_file_path) # New, uses file path from session
+    elsif excel_file_path.end_with?(".csv")
+      spreadsheet = Roo::CSV.new(excel_file_path) # New, uses file path from session
+    end
+
     spreadsheet.default_sheet = spreadsheet.sheets.first
 
     field_headers = spreadsheet.row(1)
@@ -104,7 +118,6 @@ class ApplicantsController < ApplicationController
     # Now process each row
     (2..spreadsheet.last_row).each do |i|
       row = spreadsheet.row(i)
-
       categorized_headers.each do |key, header_value|
         field_value = if header_value.is_a?(Hash)
             # For 'many' headers, collapse the dictionary to just the values as comma-separated
@@ -118,7 +131,7 @@ class ApplicantsController < ApplicationController
         field = Field.find_by(field_name: key)
         puts "key: #{key}"
         puts "field value: #{field_value}"
-        field.infos.create(data_value: field_value, cas_id: row[headers.index("cas_id")].to_i.to_s, subgroup: key)
+        field.infos.create(data_value: field_value, cas_id: row[headers.index("cas_id")], subgroup: key)
       end
     end
     render "upload_success"
