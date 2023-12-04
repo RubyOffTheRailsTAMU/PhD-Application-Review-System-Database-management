@@ -7,6 +7,23 @@ module Api
         render json: applicants
       end
 
+      def return_PDF
+        pdf_files = Dir.glob(Rails.root.join("public", "uploads", "PDF", "*.pdf"))
+        results = []
+        cas_id = params[:cas_id]
+        pdf_files.each do |pdf_file|
+          #check if a pdf file contains CAS ID
+          if pdf_file.include?(cas_id)
+            results << pdf_file
+          end
+        end    
+        if results.any?
+          first_result = results.first
+          encoded_result = Base64.strict_encode64(first_result.to_json)
+        end
+        render json: {"pdf_file": encoded_result}
+      end
+
       def show
         applicant = Applicant.find(params[:id])
         render json: applicant
