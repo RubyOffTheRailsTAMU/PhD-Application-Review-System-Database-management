@@ -8,8 +8,13 @@ class UploadsController < ApplicationController
   def create
     uploaded_file = params[:file]
     #check if file is of format .xlsx, .xls or .csv
-    if uploaded_file && (uploaded_file.content_type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || uploaded_file.content_type == "application/vnd.ms-excel" || uploaded_file.content_type == "text/csv")
-      filename = uploaded_file.original_filename
+    if uploaded_file && (
+      uploaded_file.content_type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+      uploaded_file.content_type == "application/vnd.ms-excel" ||
+      uploaded_file.content_type == "text/csv" ||
+      uploaded_file.content_type == "application/zip"
+    )      
+    filename = uploaded_file.original_filename
       File.open(Rails.root.join("public", "uploads", filename), "wb") do |file|
         file.write(uploaded_file.read)
         session[:excel_file_path] = file.path # Add file path to session. It will contain the file path from the last uploaded file.
