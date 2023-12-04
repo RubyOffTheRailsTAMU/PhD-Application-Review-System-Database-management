@@ -8,6 +8,10 @@ module Api
       end
 
       def return_PDF
+        #check if directory exists, if not create it
+        unless File.directory?(Rails.root.join("public", "uploads", "PDF"))
+          FileUtils.mkdir_p(Rails.root.join("public", "uploads", "PDF"))
+        end
         pdf_files = Dir.glob(Rails.root.join("public", "uploads", "PDF", "*.pdf"))
         puts pdf_files
         results = []
