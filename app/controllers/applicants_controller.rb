@@ -26,7 +26,7 @@ class ApplicantsController < ApplicationController
     puts "excel_file_path: #{excel_file_path}"
     rename_me_later(old_fields_json, new_fields_json)
     # Optionally, you can render a response or redirect to another page
-    render json: { message: "Data received successfully" }
+    # render json: { message: "Data received successfully" }
   end
 
   def process_input
