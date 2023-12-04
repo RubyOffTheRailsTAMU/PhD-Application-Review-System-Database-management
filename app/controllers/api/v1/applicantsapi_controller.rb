@@ -16,10 +16,12 @@ module Api
           if pdf_file.include?(cas_id)
             results << pdf_file
           end
-        end    
+        end
         if results.any?
           first_result = results.first
           encoded_result = Base64.strict_encode64(first_result.to_json)
+        else
+          encoded_result = "error"
         end
         render json: {"pdf_file": encoded_result}
       end
