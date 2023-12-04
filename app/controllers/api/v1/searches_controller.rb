@@ -9,7 +9,7 @@ module Api
         fields = Field.all
         render json: fields
       end
-
+              
       def allapplicants
         applicants = Info.all.pluck(:cas_id).uniq
         render json: applicants
