@@ -9,6 +9,7 @@ module Api
 
       def return_PDF
         pdf_files = Dir.glob(Rails.root.join("public", "uploads", "PDF", "*.pdf"))
+        puts pdf_files
         results = []
         cas_id = params[:cas_id]
         pdf_files.each do |pdf_file|
@@ -19,7 +20,8 @@ module Api
         end
         if results.any?
           first_result = results.first
-          encoded_result = Base64.strict_encode64(first_result.to_json)
+          name = File.read(first_result)
+          encoded_result = Base64.strict_encode64(name)
         else
           encoded_result = "error"
         end
