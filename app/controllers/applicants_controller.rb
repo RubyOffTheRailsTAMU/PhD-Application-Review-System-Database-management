@@ -131,7 +131,7 @@ class ApplicantsController < ApplicationController
         field = Field.find_by(field_name: key)
         puts "key: #{key}"
         puts "field value: #{field_value}"
-        field.infos.create(data_value: field_value, cas_id: row[header.index("cas_id")], subgroup: key)
+        field.infos.create(data_value: field_value, cas_id: row[headers.index("cas_id")], subgroup: key)
       end
     end
     render "upload_success"
