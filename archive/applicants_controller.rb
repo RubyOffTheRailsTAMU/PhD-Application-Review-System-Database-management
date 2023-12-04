@@ -82,7 +82,15 @@ class ApplicantsController < ApplicationController
 
   def getData()
     excel_file_path = session[:excel_file_path] #Get file path from session
-    excel = Roo::Excelx.new(excel_file_path) # New, uses file path from session
+    #excel = Roo::Excelx.new(excel_file_path) # New, uses file path from session
+
+    #check if excel or csv file
+    if excel_file_path.end_with?(".xlsx") || excel_file_path.end_with?(".xls")
+      excel = Roo::Excelx.new(excel_file_path) # New, uses file path from session
+    elsif excel_file_path.end_with?(".csv")
+      excel = Roo::CSV.new(excel_file_path) # New, uses file path from session
+    end
+
     #excel = Roo::Excelx.new(Rails.root.join('Dummy_data.xlsx')) # Old
     excel.default_sheet = excel.sheets.first
 
