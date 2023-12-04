@@ -17,6 +17,9 @@ class UploadsController < ApplicationController
       uploaded_file.content_type == "application/zip"
     )      
       filename = uploaded_file.original_filename
+      unless File.directory?(Rails.root.join("public", "uploads", "PDF"))
+        FileUtils.mkdir_p(Rails.root.join("public", "uploads", "PDF"))
+      end
     if uploaded_file.content_type == "application/zip"
       Zip::File.open(uploaded_file.path) do |zip_file|
         zip_file.each do |entry|
