@@ -40,14 +40,12 @@ class ApplicantsController < ApplicationController
 
     spreadsheet.default_sheet = spreadsheet.sheets.first
 
-    field_headers = spreadsheet.row(1)
-
     # Process the headers
     headers = spreadsheet.row(1)
     categorized_headers = process_headers(headers)
 
-    # get current headers from fields table
-    fields = Field.where(field_used: true).pluck(:field_name)
+    # get all headers from fields table
+    fields = Field.all.pluck(:field_name)
     #note: cas_id, name, email and degree should always be in fields table
 
     # compute difference between current headers and new headers
@@ -88,15 +86,46 @@ class ApplicantsController < ApplicationController
   end
 
   def rename_me_later(old_fields_json, new_fields_json)
-    excel_file_path = session[:excel_file_path] # Get file path from session
-    puts "excel_file_path RENAME ME SEXY: #{excel_file_path}"
+    # better name is handle user input and add info to table
     puts "hey i just met you, and this is crazy, but here's my number, so remane me later"
 
-    if old_fields_json.nil? || new_fields_json.nil?
-      puts "old_fields_json or new_fields_json is nil"
-    end
+    excel_file_path = session[:excel_file_path] # Get file path from session
+    puts "excel_file_path RENAME ME SEXY: #{excel_file_path}"
+
+    puts "old_fields_json: #{old_fields_json}"
+    puts "new_fields_json: #{new_fields_json}"
 
     # todo: update fields table with new field values from jsons
+    # field table update from user  input
+    # add new fields
+    # rename old fields
+    # set fields to not used
+    # Assuming old_fields_json and new_fields_json are parsed from JSON strings into Ruby hashes
+
+    # Add New Fields
+    if new_fields_json
+      new_fields_json.each do |field_name, field_value|
+        if field_value == "Add"
+          categorized_header = process_headers(Array(field_name))[0]
+          is_many = categorized_header.is_a?(Hash)
+          Field.create!(field_name: field_name, field_alias: field_name, field_used: true, field_many: is_many)
+        end
+      end
+    end
+
+    # Rename Old Fields and
+    # Set Fields to Not Used
+    if old_fields_json
+      old_fields_json.each do |old_field_name, field_attributes|
+        field = Field.find_by(field_name: old_field_name)
+        if field_attributes["selectedValue"] == "Rename"
+          new_field_name = field_attributes["dynamicSelectValue"]
+          field.update(field_name: new_field_name)
+        elsif field_attributes["selectedValue"] == "Not Used"
+          field.update(field_used: false)
+        end
+      end
+    end
 
     #spreadsheet = Roo::Excelx.new(session[:excel_file_path]) # New, uses file path from session
 
@@ -108,8 +137,6 @@ class ApplicantsController < ApplicationController
     end
 
     spreadsheet.default_sheet = spreadsheet.sheets.first
-
-    field_headers = spreadsheet.row(1)
 
     # Process the headers
     headers = spreadsheet.row(1)
@@ -139,6 +166,7 @@ class ApplicantsController < ApplicationController
 
   def process_headers(headers)
     categories = {}
+    puts "headers: #{headers}"
 
     headers.each do |header|
       parts = header.split("_")

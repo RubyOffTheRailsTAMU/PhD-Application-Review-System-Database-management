@@ -1,6 +1,10 @@
 <!-- index.html.erb -->
 <div>
-  <link href="./home.css" rel="stylesheet" />
+  <%
+=begin%>
+ <link href="./home.css" rel="stylesheet" /> 
+<%
+=end%>
   <div class="home-container">
     <span class="home-text">Please Handle the following Elements:</span>
     <span class="home-text1">New Fields (In upload, but not in the database):</span>
@@ -189,7 +193,13 @@ function sendResponsesToServer() {
   .then(response => response.json())
   .then(data => {
     console.log('Response from server:', data);
-    // Handle the response from the server as needed
+    if (data.success) {
+      // Redirect to the upload_success page
+      window.location.href = "/applicants/upload_success";
+    } else {
+      // Handle error or unsuccessful response
+      console.error('Upload failed');
+    }  
   })
   .catch(error => {
     console.error('Error:', error);
