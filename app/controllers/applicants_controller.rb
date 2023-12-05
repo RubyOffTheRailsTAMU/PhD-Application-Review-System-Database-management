@@ -161,7 +161,11 @@ class ApplicantsController < ApplicationController
         field.infos.create(data_value: field_value, cas_id: row[headers.index("cas_id")], subgroup: key)
       end
     end
-    render "upload_success"
+    if new_fields_json
+      render json: { success: true } and return
+    else
+      render "upload_success" and return
+    end
   end
 
   def process_headers(headers)

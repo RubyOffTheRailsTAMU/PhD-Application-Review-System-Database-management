@@ -194,12 +194,12 @@ function sendResponsesToServer() {
   .then(data => {
     console.log('Response from server:', data);
     if (data.success) {
-      // Redirect to the upload_success page
+      // Redirect to the upload_success page only if the request was successful
       window.location.href = "/applicants/upload_success";
     } else {
       // Handle error or unsuccessful response
       console.error('Upload failed');
-    }  
+    }
   })
   .catch(error => {
     console.error('Error:', error);
