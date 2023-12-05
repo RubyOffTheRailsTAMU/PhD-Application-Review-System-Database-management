@@ -9,6 +9,29 @@
   flex-direction: column;
   justify-content: flex-start;
 }
+.submit-responses{
+  font-size: 18px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none; /* Remove default underline style for links */
+  margin-top: 20px;  
+}
+.set-all-new-fields{
+  top: 190px;
+  right: 190px; /* Set to 20px from the right edge */
+  position: absolute;
+}
+
+.reset-all-new-fields{
+  top: 210px;
+  right: 210px; /* Set to 20px from the right edge */
+  position: absolute;
+}
+
 .home-text {
   font-size: 35px;
   align-self: center;
@@ -17,23 +40,37 @@
   font-weight: 700;
   text-transform: capitalize;
 }
-.home-text1 {
-  top: 158px;
-  left: 800px;
-  position: absolute;
-}
-.home-text2 {
-  top: 166px;
-  left: 14px;
-  position: absolute;
-}
-.home-ul {
-  top: 176px;
-  right: 115px;
+.new-fields-list {
+  top: 190px;
   width: 298px;
+  right: 50px; /* Set to 20px from the right edge */
+  position: absolute;
+  margin-top: 50px;
+}
+
+.new-fields-text {
+  top: 158px;
+  font-size: 25px;
+  right: 50px; /* Set to 20px from the right edge */
   position: absolute;
 }
-.home-select {
+
+.old-fields-list {
+  top: 158px;
+  width: 298px;
+  left: 50px; /* Set to 20px from the right edge */
+  position: absolute;
+  margin-top: 50px;
+}
+
+.old-fields-text {
+  font-size: 25px;
+  top: 158px;
+  left: 50px;
+  position: absolute;
+}
+
+.new-fields-select {
   height: var(--dl-size-size-small);
 }
 .home-select1 {

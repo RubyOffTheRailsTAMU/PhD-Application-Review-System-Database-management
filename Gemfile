@@ -47,7 +47,7 @@ gem 'roo'
 
 # zip file processing
 gem 'rubyzip', '~> 2.3', '>= 2.3.2'
-gem 'fileutils', '~> 0.7.2'
+gem 'fileutils'
 
 #PDF parsing
 gem 'pdf-reader', '~> 1.4'
