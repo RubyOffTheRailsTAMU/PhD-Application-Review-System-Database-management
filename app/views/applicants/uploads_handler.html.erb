@@ -228,7 +228,6 @@ function setLeftNotUsed() {
 
 }
 
-
 function sendResponsesToServer() {
   // Make a Fetch API request to your server endpoint
   fetch('/applicants/uploads_handler', {
@@ -244,7 +243,13 @@ function sendResponsesToServer() {
   .then(response => response.json())
   .then(data => {
     console.log('Response from server:', data);
-    // Handle the response from the server as needed
+    if (data.success) {
+      // Redirect to the upload_success page only if the request was successful
+      window.location.href = "/applicants/upload_success";
+    } else {
+      // Handle error or unsuccessful response
+      console.error('Upload failed');
+    }
   })
   .catch(error => {
     console.error('Error:', error);
