@@ -1,20 +1,16 @@
 <!-- index.html.erb -->
 <div>
-  <%
-=begin%>
- <link href="./home.css" rel="stylesheet" /> 
-<%
-=end%>
+  <link rel="stylesheet" type="text/css" href="<%= asset_path('home.css') %>">
   <div class="home-container">
     <span class="home-text">Please Handle the following Elements:</span>
-    <span class="home-text1">New Fields (In upload, but not in the database):</span>
-    <span class="home-text2">Old Fields (Not in upload, but in the database):</span>
+    <span class="new-fields-text">New Fields (In upload, but not in the database):</span>
+    <span class="old-fields-text">Old Fields (Not in upload, but in the database):</span>
 
-    <ul class="home-ul1 list" id="leftColumn">
+    <ul class="old-fields-list" id="leftColumn">
       <% @old_fields.each do |value| %>
         <li class="list-item">
           <span><%= value %></span>
-          <select class="home-select" onchange="handleChange(this, '<%= value %>')">
+          <select class="old-fields-select" onchange="handleChange(this, '<%= value %>')">
             <option value="Select An Option:">Select An Option:</option>
             <option value="Rename">Rename</option>
             <option value="Not Used">Not Used</option>
@@ -26,18 +22,22 @@
       <% end %>
     </ul>
 
-    <ul class="home-ul list" id="rightColumn">
+    <ul class="new-fields-list" id="rightColumn">
       <% @new_fields.each do |value| %>
         <li class="list-item">
           <span id="rightElement_<%= value %>"><%= value %></span>
-          <select id="rightSelect_<%= value %>" class="home-select" onchange="handleRightChange(this, '<%= value %>')">
+          <select id="rightSelect_<%= value %>" class="new-fields-select" onchange="handleRightChange(this, '<%= value %>')">
             <option value="Select An Option:">Select An Option:</option>
             <option value="Add">Add</option>
           </select>
         </li>
       <% end %>
     </ul>
-  <button onclick="sendResponsesToServer()">Submit Responses</button>
+  <button class = "submit-responses" onclick="sendResponsesToServer()">Submit Responses</button>
+  <button class = "set-all-new-fields" onclick="setRightList()">Set all to "Add"</button>
+  <button class = "reset-all-new-fields" onclick="clearRightList()">Clear all</button>
+  <button class = "not-used-all-old-fields" onclick="setLeftNotUsed()">Set all to "Not Used"</button>
+
   </div>
 
   <script>
@@ -176,6 +176,56 @@ function disableRightValue(value) {
   var rightSelect = document.getElementById(rightSelectId);
   rightSelect.disabled = true;
   rightSelect.value = "Renaming " + value;
+}
+
+function setRightList() {
+  // Iterate through all select boxes and set them to "Add"
+  document.querySelectorAll('.new-fields-select').forEach(function (select) {
+    select.value = 'Add';
+    var selectName = select.id.replace('rightSelect_', '');
+    rightColumnResponses[selectName] = "Add";
+    console.log(rightColumnResponses);
+    
+
+  });
+}
+
+function clearRightList() {
+  // Iterate through all select boxes and set them to "Add"
+  document.querySelectorAll('.new-fields-select').forEach(function (select) {
+    select.value = 'Select An Option:';
+  });
+
+  // Clear the rightColumnResponses object
+  rightColumnResponses = {};
+
+}
+
+function extractKeyFromLog(log) {
+  var match = log.match(/handleChange\(this, '([^']+)'\)/);
+  if (match) {
+    return match[1];
+  }
+  return null;
+}
+
+function setLeftNotUsed() {
+  // Iterate through all select boxes and set them to "Add"
+  document.querySelectorAll('.old-fields-select').forEach(function (select) {
+    select.value = "Not Used";
+    selectName = extractKeyFromLog(select.onchange.toString());
+    
+    responsesDictionary[selectName] = {
+      "selectedValue": "Not Used",
+      "dynamicTextId": "dynamicText_" + selectName,
+      "dynamicSelectValue": "renameSelect_" + selectName
+    };
+
+  });
+
+  console.log("Responses Dictionary:", responsesDictionary);
+ 
+
 }
 
 function sendResponsesToServer() {
