@@ -31,7 +31,7 @@ class UploadsController < ApplicationController
           #extract file
           entry.extract(Rails.root.join("public", "uploads", "PDF", filename))
         end
-        flash[:success] = 'PDF uploaded successfully!'
+        flash[:success] = 'PDFs in .zip uploaded successfully!'
       end
       redirect_to "/uploads/new"
     else
@@ -44,7 +44,7 @@ class UploadsController < ApplicationController
       end
     end
     elsif uploaded_file && (uploaded_file.content_type != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || uploaded_file.content_type != "application/vnd.ms-excel" || uploaded_file.content_type != "text/csv")
-      flash[:error] = "Invalid file format! Please upload a file of type .xlsx, .xls or .csv"
+      flash[:error] = "Invalid file format! Please upload a file of type .xlsx, .xls or .csv, or a .zip file containing only .pdf files."
       redirect_to "/uploads/new"
     else
       flash[:error] = "No file selected. Please choose a file."
